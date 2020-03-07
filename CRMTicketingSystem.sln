@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29728.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMTicketingSystem", "CRMTicketingSystem\CRMTicketingSystem.csproj", "{1DD43227-66BB-4C16-81A0-0FFEE906D704}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1DD43227-66BB-4C16-81A0-0FFEE906D704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DD43227-66BB-4C16-81A0-0FFEE906D704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DD43227-66BB-4C16-81A0-0FFEE906D704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DD43227-66BB-4C16-81A0-0FFEE906D704}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29EEC220-9978-4025-9FBC-95EAD5AF0C46}
+	EndGlobalSection
+EndGlobal
