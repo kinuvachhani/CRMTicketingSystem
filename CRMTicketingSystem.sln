@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMTicketingSystem", "CRMTicketingSystem\CRMTicketingSystem.csproj", "{1DD43227-66BB-4C16-81A0-0FFEE906D704}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CRMTicketingSystem", "CRMTicketingSystem\CRMTicketingSystem.csproj", "{1DD43227-66BB-4C16-81A0-0FFEE906D704}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMTicketingSystem.DataAccess", "CRMTicketingSyatem.DataAccess\CRMTicketingSystem.DataAccess.csproj", "{7A76B91A-9A2D-4D70-A2EF-932F297FD1B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMTicketingSystem.Models", "CRMTicketingSystem.Models\CRMTicketingSystem.Models.csproj", "{F8B03FB2-38DB-49C4-8DB0-D9448CA7D250}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMTicketingSystem.Utility", "CRMTicketingSystem.Utility\CRMTicketingSystem.Utility.csproj", "{8CBA0BFF-C3E1-4C0C-AA1F-415F0A91B118}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +21,18 @@ Global
 		{1DD43227-66BB-4C16-81A0-0FFEE906D704}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DD43227-66BB-4C16-81A0-0FFEE906D704}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DD43227-66BB-4C16-81A0-0FFEE906D704}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A76B91A-9A2D-4D70-A2EF-932F297FD1B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A76B91A-9A2D-4D70-A2EF-932F297FD1B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A76B91A-9A2D-4D70-A2EF-932F297FD1B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A76B91A-9A2D-4D70-A2EF-932F297FD1B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8B03FB2-38DB-49C4-8DB0-D9448CA7D250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8B03FB2-38DB-49C4-8DB0-D9448CA7D250}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8B03FB2-38DB-49C4-8DB0-D9448CA7D250}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8B03FB2-38DB-49C4-8DB0-D9448CA7D250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CBA0BFF-C3E1-4C0C-AA1F-415F0A91B118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CBA0BFF-C3E1-4C0C-AA1F-415F0A91B118}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CBA0BFF-C3E1-4C0C-AA1F-415F0A91B118}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CBA0BFF-C3E1-4C0C-AA1F-415F0A91B118}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

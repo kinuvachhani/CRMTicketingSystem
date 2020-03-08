@@ -1,6 +1,6 @@
 using System;
 
-namespace CRMTicketingSystem.Models
+namespace CRMTicketingSystem.Models.ViewModels
 {
     public class ErrorViewModel
     {
