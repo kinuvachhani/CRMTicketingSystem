@@ -12,6 +12,8 @@ using CRMTicketingSystem.DataAccess.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using CRMTicketingSystem.DataAccess.Repository.IRepository;
+using CRMTicketingSystem.DataAccess.Repository;
 
 namespace CRMTicketingSystem
 {
@@ -32,6 +34,7 @@ namespace CRMTicketingSystem
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
         }
