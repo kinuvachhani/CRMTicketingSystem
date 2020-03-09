@@ -24,7 +24,6 @@ namespace CRMTicketingSystem.DataAccess.Repository
             {
                 ObjFromDb.Name = category.Name;
             }
-            _db.SaveChanges();
         }
     }
 }
