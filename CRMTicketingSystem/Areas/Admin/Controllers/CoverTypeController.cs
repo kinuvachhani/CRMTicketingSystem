@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace CRMTicketingSystem.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoryController : Controller
+    public class CoverTypeController : Controller
     {
         private readonly IUnitOfWork _unitofwork;
 
-        public CategoryController(IUnitOfWork unitOfwork)
+        public CoverTypeController(IUnitOfWork unitOfwork)
         {
             _unitofwork = unitOfwork;
         }
@@ -25,39 +25,39 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
 
         public IActionResult Upsert(int? id)
         {
-            Category category = new Category();
-            if(id == null)
+            CoverType coverType = new CoverType();
+            if (id == null)
             {
                 // this is for create
-                return View(category);
+                return View(coverType);
             }
             //this is for edit
-            category = _unitofwork.Category.Get(id.GetValueOrDefault());
-            if(category == null)
+            coverType = _unitofwork.CoverType.Get(id.GetValueOrDefault());
+            if (coverType == null)
             {
                 return NotFound();
             }
-            return View(category);
+            return View(coverType);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Category category)
+        public IActionResult Upsert(CoverType coverType)
         {
             if (ModelState.IsValid)
             {
-                if (category.Id == 0)
+                if (coverType.Id == 0)
                 {
-                    _unitofwork.Category.Add(category);
+                    _unitofwork.CoverType.Add(coverType);
                 }
                 else
                 {
-                    _unitofwork.Category.Update(category);
+                    _unitofwork.CoverType.Update(coverType);
                 }
-                _unitofwork.Save(); 
+                _unitofwork.Save();
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(coverType);
         }
 
         #region API CALLS
@@ -65,19 +65,19 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allObj = _unitofwork.Category.GetAll();
+            var allObj = _unitofwork.CoverType.GetAll();
             return Json(new { data = allObj });
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var Dbobj = _unitofwork.Category.Get(id);
+            var Dbobj = _unitofwork.CoverType.Get(id);
             if (Dbobj == null)
             {
                 return Json(new { success = false, message = "Error while deleting" });
             }
-            _unitofwork.Category.Remove(Dbobj);
+            _unitofwork.CoverType.Remove(Dbobj);
             _unitofwork.Save();
             return Json(new { success = true, message = "Delete Successful" });
         }
