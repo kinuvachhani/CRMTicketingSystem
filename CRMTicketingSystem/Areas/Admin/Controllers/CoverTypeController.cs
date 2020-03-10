@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.Models;
+using CRMTicketingSystem.Utility;
+using Dapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CRMTicketingSystem.Areas.Admin.Controllers
@@ -32,7 +34,9 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                 return View(coverType);
             }
             //this is for edit
-            coverType = _unitofwork.CoverType.Get(id.GetValueOrDefault());
+            var parameter = new DynamicParameters();
+            parameter.Add("@Id", id);
+            coverType= _unitofwork.SP_call.OneRecord<CoverType>(SD.Proc_CoverType_Get, parameter);
             if (coverType == null)
             {
                 return NotFound();
@@ -46,13 +50,16 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                var Parameter = new DynamicParameters();
+                Parameter.Add("@Name", coverType.Name);
                 if (coverType.Id == 0)
                 {
-                    _unitofwork.CoverType.Add(coverType);
+                    _unitofwork.SP_call.Execute(SD.Proc_CoverType_Create, Parameter);
                 }
                 else
                 {
-                    _unitofwork.CoverType.Update(coverType);
+                    Parameter.Add("@Id", coverType.Id);
+                    _unitofwork.SP_call.Execute(SD.Proc_CoverType_Update, Parameter);
                 }
                 _unitofwork.Save();
                 return RedirectToAction(nameof(Index));
@@ -65,19 +72,21 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allObj = _unitofwork.CoverType.GetAll();
+            var allObj = _unitofwork.SP_call.List<CoverType>(SD.Proc_CoverType_GetAll,null);
             return Json(new { data = allObj });
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var Dbobj = _unitofwork.CoverType.Get(id);
+            var parameter = new DynamicParameters();
+            parameter.Add("@Id",id);
+            var Dbobj = _unitofwork.SP_call.OneRecord<CoverType>(SD.Proc_CoverType_Get,parameter);
             if (Dbobj == null)
             {
                 return Json(new { success = false, message = "Error while deleting" });
             }
-            _unitofwork.CoverType.Remove(Dbobj);
+            _unitofwork.SP_call.Execute(SD.Proc_CoverType_Delete,parameter);
             _unitofwork.Save();
             return Json(new { success = true, message = "Delete Successful" });
         }
