@@ -2,7 +2,7 @@
 
 namespace CRMTicketingSystem.DataAccess.Migrations
 {
-    public partial class AddApplicationUserToDatabase : Migration
+    public partial class AddUserPropertiesToDatabse : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

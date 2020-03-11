@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CRMTicketingSystem.Models
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser :IdentityUser
     {
         [Required]
         public string Name { get; set; }
@@ -17,8 +17,10 @@ namespace CRMTicketingSystem.Models
         public string PostalCode { get; set; }
 
         public int? CompanyId { get; set; }
-        [ForeignKey("ComapanyId")]
+
+        [ForeignKey("CompanyId")]
         public Company Company { get; set; }
+
         [NotMapped]
         public string Role { get; set; }
     }

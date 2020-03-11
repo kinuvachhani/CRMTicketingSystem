@@ -10,7 +10,8 @@ namespace CRMTicketingSystem.DataAccess.Repository.IRepository
 
         ICoverTypeRepository CoverType { get; }
         IProductRepository Product { get; }
-
+        ICompanyRepository Company { get; }
+        IApplicationUserRepository ApplicationUser { get; }
         ISP_call SP_call { get; }
 
         void Save();

@@ -2,7 +2,7 @@
 
 namespace CRMTicketingSystem.DataAccess.Migrations
 {
-    public partial class AddCompanyToDatabase : Migration
+    public partial class AddCompanyToDatabse : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,7 +17,7 @@ namespace CRMTicketingSystem.DataAccess.Migrations
                     City = table.Column<string>(nullable: true),
                     State = table.Column<string>(nullable: true),
                     PostalCode = table.Column<string>(nullable: true),
-                    PhoneNmber = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
                     IsAuthorizedCompany = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>

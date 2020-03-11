@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CRMTicketingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200311051231_AddApplicationUserToDatabase")]
-    partial class AddApplicationUserToDatabase
+    [Migration("20200311075120_AddUserPropertiesToDatabse")]
+    partial class AddUserPropertiesToDatabse
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
