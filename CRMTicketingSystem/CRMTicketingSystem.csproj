@@ -25,4 +25,9 @@
     <ProjectReference Include="..\CRMTicketingSystem.Models\CRMTicketingSystem.Models.csproj" />
     <ProjectReference Include="..\CRMTicketingSystem.Utility\CRMTicketingSystem.Utility.csproj" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\images\Products\" />
+  </ItemGroup>
 </Project>

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CRMTicketingSystem.Models.ViewModels;
+using CRMTicketingSystem.DataAccess.Repository.IRepository;
+using CRMTicketingSystem.Models;
 
 namespace CRMTicketingSystem.Areas.Customer.Controllers
 {
@@ -13,15 +15,18 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork _unitofwork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitofwork)
         {
             _logger = logger;
+            _unitofwork = unitofwork;
         }
 
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<Product> productList = _unitofwork.Product.GetAll(includeProperties: "Category,CoverType");
+            return View(productList);
         }
 
         public IActionResult Privacy()
