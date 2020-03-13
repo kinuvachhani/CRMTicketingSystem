@@ -48,6 +48,32 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             return Json(new { data = userList });
         }
 
+        [HttpPost]
+        public IActionResult LockUnlock([FromBody] string id)
+        {
+            var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+            var isadmin = _db.UserRoles.Select(u => u.RoleId == "Admin");
+            if(isadmin != null)
+            {
+                return Json(new { success = false, message = "Admin Can't Lock." });
+            }
+            if(objFromDb == null)
+            {
+                return Json(new { success = false, message = "Error while Lockin/Unlocking" });
+            }
+            if(objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
+            {
+                //user is currently locked, admin will unlock them
+                objFromDb.LockoutEnd = DateTime.Now;
+            }
+            else
+            {
+                objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
+            }
+            _db.SaveChanges();
+            return Json(new { success = true, message = "Operation Successful." });
+        }
+
         #endregion
     }
 }
