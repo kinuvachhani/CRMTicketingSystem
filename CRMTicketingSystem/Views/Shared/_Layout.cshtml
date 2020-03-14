@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using CRMTicketingSystem.Utility
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,6 +27,8 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        @if(User.IsInRole(SD.Role_Admin))
+                        {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Content Management
@@ -36,6 +39,8 @@
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
                             </div>
                         </li>
+                        }@if(User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                        { 
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 User / Company
@@ -45,6 +50,7 @@
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="User" asp-action="Index">User</a>
                             </div>
                         </li>
+                        }
                     </ul>
                 </div>
             </div>

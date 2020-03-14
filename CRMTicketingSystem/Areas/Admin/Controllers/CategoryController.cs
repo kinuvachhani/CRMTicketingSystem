@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.Models;
+using CRMTicketingSystem.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CRMTicketingSystem.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =SD.Role_Admin)]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork _unitofwork;

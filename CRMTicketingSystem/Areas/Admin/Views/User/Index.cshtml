@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,7 +8,10 @@
         <h2 class="text-primary">User's List </h2>
     </div>
     <div class="col-6 text-right">
-        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register"><i class="fas facebook-btn"></i> &nbsp; Create New User</a>
+        <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">
+            <i class="fas fa-plus"></i>
+            &nbsp; Create New User
+        </a>
     </div>
 </div>
 
@@ -23,14 +25,13 @@
                 <th>Phone</th>
                 <th>Company</th>
                 <th>Role</th>
-                <th>Lock/Unlock</th>
+                <th></th>
             </tr>
         </thead>
     </table>
 </div>
 
-@section Scripts
-    {
-    <script src="~/js/User.js"></script>
-}
+@section Scripts{
 
+    <script src="~/js/user.js"></script>
+} 

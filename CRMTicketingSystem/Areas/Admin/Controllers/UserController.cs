@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.Models;
+using CRMTicketingSystem.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRMTicketingSystem.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _db;
@@ -52,18 +55,19 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         public IActionResult LockUnlock([FromBody] string id)
         {
             var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
-            var isadmin = _db.UserRoles.Select(u => u.RoleId == "Admin");
-            if(isadmin != null)
+            var isadmin = _db.UserRoles.FirstOrDefault(u =>u.UserId == objFromDb.Id);
+            var isrole = _db.Roles.FirstOrDefault(u => u.Id == isadmin.RoleId);
+            if(isrole.Name == "Admin")
             {
-                return Json(new { success = false, message = "Admin Can't Lock." });
+                return Json(new { success = false, message = "Admin can't Lock" });
             }
-            if(objFromDb == null)
+            if (objFromDb == null)
             {
-                return Json(new { success = false, message = "Error while Lockin/Unlocking" });
+                return Json(new { success = false, message = "Error while Locking/Unlocking" });
             }
-            if(objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
+            if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
             {
-                //user is currently locked, admin will unlock them
+                //user is currently locked, we will unlock them
                 objFromDb.LockoutEnd = DateTime.Now;
             }
             else
@@ -73,6 +77,7 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             _db.SaveChanges();
             return Json(new { success = true, message = "Operation Successful." });
         }
+
 
         #endregion
     }

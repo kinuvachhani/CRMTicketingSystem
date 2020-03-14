@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Models.ViewModels;
+using CRMTicketingSystem.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,7 +15,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace CRMTicketingSystem.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.Role_Admin)]
     public class ProductController : Controller
+
     {
         private readonly IUnitOfWork _unitofwork;
         private readonly IWebHostEnvironment _hostEnvironment;
