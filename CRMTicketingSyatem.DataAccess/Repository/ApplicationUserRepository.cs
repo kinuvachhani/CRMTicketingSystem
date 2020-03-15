@@ -16,5 +16,13 @@ namespace CRMTicketingSystem.DataAccess.Repository
         {
             _db = db;
         }
+        public void Update(ApplicationUser applicationUser)
+        {
+            var ObjFromDb = _db.ApplicationUsers.FirstOrDefault(s => s.Id == applicationUser.Id);
+            if (ObjFromDb != null)
+            {
+                ObjFromDb.Role = applicationUser.Role;
+            }
+        }
     }
 }

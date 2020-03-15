@@ -11,7 +11,7 @@ function loadDataTable() {
             "url": "/Admin/User/GetAll"
         },
         "columns": [
-            { "data": "name", "width": "15%" },
+            { "data": "name", "width": "10%" },
             { "data": "email", "width": "15%" },
             { "data": "phoneNumber", "width": "15%" },
             { "data": "company.name", "width": "15%" },
@@ -56,14 +56,15 @@ function loadDataTable() {
                                     </a>
                                </div> 
                            `;
-                }, "width": "40%"
+                }, "width": "10%"
             }
         ]
     });
 }
 
 
-function LockUnlock(id) {    $.ajax({
+function LockUnlock(id) {
+    $.ajax({
         type: "POST",
         url: '/Admin/User/LockUnlock',
         data: JSON.stringify(id),
@@ -73,8 +74,7 @@ function LockUnlock(id) {    $.ajax({
                 toastr.success(data.message);
                 dataTable.ajax.reload();
             }
-            else
-            {
+            else {
                 toastr.error(data.message);
             }
         }

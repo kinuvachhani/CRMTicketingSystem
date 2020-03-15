@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.Models;
+using CRMTicketingSystem.Models.ViewModels;
 using CRMTicketingSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRMTicketingSystem.Areas.Admin.Controllers
@@ -17,16 +20,52 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly IUnitOfWork _unitofwork;
+        RoleManager<IdentityRole> _roleManager;
 
-        public UserController(ApplicationDbContext db)
+        public UserController(ApplicationDbContext db, IUnitOfWork unitOfwork, RoleManager<IdentityRole> roleManager)
         {
             _db = db;
+            _unitofwork = unitOfwork;
+            _roleManager = roleManager;
         }
 
         public IActionResult Index()
         {
             return View();
         }
+
+        public IActionResult Upsert(string id)
+        {
+            ApplicationUser applicationuser = new ApplicationUser();
+            //this is for edit
+            applicationuser = _unitofwork.ApplicationUser.GetFirstOrDefault(i=>i.Id==id);
+            if (applicationuser == null)
+            {
+                return NotFound();
+            }
+            return View(applicationuser);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Upsert(ApplicationUser applicationUser)
+        { 
+            if (applicationUser.Id != null)
+            {
+                var UserRole = _db.UserRoles.FirstOrDefault(i => i.UserId == applicationUser.Id);
+                if(applicationUser.Id == UserRole.UserId)
+                {
+                    var role = _db.Roles.FirstOrDefault(i => i.Name == applicationUser.Role);
+                    UserRole.RoleId = role.Id;
+                }
+                //_unitofwork.ApplicationUser.Update(applicationUser);
+            }
+            _unitofwork.Save();
+             return RedirectToAction(nameof(Index));
+
+        }
+
 
         #region API CALLS
 

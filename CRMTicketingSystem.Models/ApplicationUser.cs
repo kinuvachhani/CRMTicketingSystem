@@ -24,4 +24,13 @@ namespace CRMTicketingSystem.Models
         [NotMapped]
         public string Role { get; set; }
     }
+
+    public enum RoleList
+    {
+        Admin,
+        Company_Customer,
+        Employee,
+        Individual_Customer
+
+    }
 }

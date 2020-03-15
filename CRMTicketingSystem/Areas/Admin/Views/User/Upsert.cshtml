@@ -1,0 +1,43 @@
+﻿@model CRMTicketingSystem.Models.ApplicationUser
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" enctype="multipart/form-data">
+    <div class="row p-3 border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">Change User Role</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    Cover Type
+                </div>
+                <div class="col-8">
+                    @*@Html.DropDownListFor(m => m.Role, "--Select a Cover Type",
+        new { @class = "form-control" })*@
+                    @Html.DropDownListFor(m => m.Role,
+                    new SelectList(Enum.GetValues(typeof(RoleList))),
+                    "--Select a Cover Type")
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    @if (Model.Id != null)
+                    {
+                        <partial name="_updateUser" model="Model.Id" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+
