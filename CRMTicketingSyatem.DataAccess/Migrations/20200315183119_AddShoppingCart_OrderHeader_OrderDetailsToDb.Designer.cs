@@ -4,14 +4,16 @@ using CRMTicketingSystem.DataAccess.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CRMTicketingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200315183119_AddShoppingCart_OrderHeader_OrderDetailsToDb")]
+    partial class AddShoppingCart_OrderHeader_OrderDetailsToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -458,8 +460,7 @@ namespace CRMTicketingSystem.DataAccess.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
-                    
-                    b.HasKey("UserId");
+                    b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
