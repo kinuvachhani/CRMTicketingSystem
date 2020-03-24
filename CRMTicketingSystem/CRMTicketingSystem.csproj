@@ -19,6 +19,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Utils" Version="3.1.1" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="17.4.0.55" />
+    <PackageReference Include="Syncfusion.EJ2.PdfViewer.AspNet.Core.Windows" Version="17.4.0.55" />
   </ItemGroup>
 
 
@@ -31,5 +33,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\Products\" />
+    <Folder Include="wwwroot\BookPdf\" />
   </ItemGroup>
 </Project>

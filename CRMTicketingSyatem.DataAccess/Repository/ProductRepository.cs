@@ -26,6 +26,10 @@ namespace CRMTicketingSystem.DataAccess.Repository
                 {
                     ObjFromDb.ImageUrl = product.ImageUrl;
                 }
+                if (product.PreviewUrl != null)
+                {
+                    ObjFromDb.PreviewUrl = product.PreviewUrl;
+                }
                 ObjFromDb.ISBN= product.ISBN;
                 ObjFromDb.Price= product.Price;
                 ObjFromDb.Price50= product.Price50;
