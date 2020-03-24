@@ -235,9 +235,6 @@ namespace CRMTicketingSystem.DataAccess.Migrations
                     b.Property<double>("ListPrice")
                         .HasColumnType("float");
 
-                    b.Property<string>("PreviewUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
