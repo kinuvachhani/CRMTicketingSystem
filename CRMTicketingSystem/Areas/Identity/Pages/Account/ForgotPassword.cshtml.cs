@@ -10,6 +10,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using CRMTicketingSystem.DataAccess.Data;
+using System.Linq;
+using CRMTicketingSystem.Enum;
+using CRMTicketingSystem.Models;
 
 namespace CRMTicketingSystem.Areas.Identity.Pages.Account
 {
@@ -18,11 +22,13 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly ApplicationDbContext _db;
 
-        public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<IdentityUser> userManager, IEmailSender emailSender,ApplicationDbContext db)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _db = db;
         }
 
         [BindProperty]
@@ -56,10 +62,21 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
+                EmailTemplate TemplateData = _db.EmailTemplates.
+                    Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.ForgotPassword)).FirstOrDefault();
+
+                var appuser = _db.ApplicationUsers.FirstOrDefault(u => u.Email == Input.Email);
+
+                // replace content data
+                TemplateData.Content = TemplateData.Content.Replace("###callbackUrl###", callbackUrl);
+                TemplateData.Content = TemplateData.Content.Replace("###Name###", appuser.Name);
+                TemplateData.Content = TemplateData.Content.Replace("###Email###", appuser.Email);
+
                 await _emailSender.SendEmailAsync(
                     Input.Email,
-                    "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    TemplateData.Subject,
+                    TemplateData.Content);
+                    //$"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

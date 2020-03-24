@@ -35,7 +35,7 @@ namespace CRMTicketingSystem
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             //services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
+            services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -48,17 +48,27 @@ namespace CRMTicketingSystem
                 options.LogoutPath = $"/Identity/Account/Logout";
                 options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
             });
+
             //add facebook authentication
             services.AddAuthentication().AddFacebook(options =>
             {
                 options.AppId = "203612404075323";
                 options.AppSecret = "5e9e7b7caa04c50c9cbb734d784b2ec9";
             });
+
             //add google authentication
             services.AddAuthentication().AddGoogle(options =>
             {
                 options.ClientId = "939815126554-s4e8fvdfaemq3cahlc6bi2fghaorsi7n.apps.googleusercontent.com";
                 options.ClientSecret = "QUxEZSfC6L4UeDQye1c_pBsg";
+            });
+
+            //add session timeout time
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
         }
 
@@ -80,7 +90,7 @@ namespace CRMTicketingSystem
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseSession();
             app.UseAuthentication();
             app.UseAuthorization();
 

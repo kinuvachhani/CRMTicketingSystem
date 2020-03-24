@@ -5,19 +5,14 @@ using System.Text;
 
 namespace CRMTicketingSystem.Models
 {
-    public class EmailTemplate
+    public class Ticket
     {
         [Key]
         public int Id { get; set; }
-
-        [Required]
-        [MaxLength(255)]
-        public string TemplateName { get; set; }
-
-        [Required]
         public string Subject { get; set; }
-
-        [Required]
-        public string Content { get; set; }
+        public string  Description { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public int Status { get; set; }
+        public string Review { get; set; }
     }
 }

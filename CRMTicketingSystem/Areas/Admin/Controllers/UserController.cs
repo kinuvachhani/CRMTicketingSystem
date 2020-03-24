@@ -53,17 +53,17 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         { 
             if (applicationUser.Id != null)
             {
-                var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == applicationUser.Id);
-                var UserRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
-                if(objFromDb.Id == UserRole.UserId)
-                {
-                    var role = _db.Roles.FirstOrDefault(i => i.Name == applicationUser.Role);
-                    UserRole.RoleId = role.Id;
-                    applicationUser.Role = role.Name;
-                }
+                //var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == applicationUser.Id);
+                //var UserRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
+                //if(objFromDb.Id == UserRole.UserId)
+                //{
+                //    var role = _db.Roles.FirstOrDefault(i => i.Name == applicationUser.Role);
+                //    UserRole.RoleId = role.Id;
+                //    applicationUser.Role = role.Name;
+                //}
                 //_unitofwork.ApplicationUser.Update(applicationUser);
                 //_unitofwork.Save();
-                _db.SaveChanges();
+                _unitofwork.Save();
             }
              return RedirectToAction(nameof(Index));
 

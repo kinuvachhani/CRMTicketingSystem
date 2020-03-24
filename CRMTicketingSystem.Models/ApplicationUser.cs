@@ -31,6 +31,5 @@ namespace CRMTicketingSystem.Models
         Company_Customer,
         Employee,
         Individual_Customer
-
     }
 }

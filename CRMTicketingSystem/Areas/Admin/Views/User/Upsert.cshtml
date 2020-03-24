@@ -17,10 +17,10 @@
                 </div>
                 <div class="col-8">
                     @*@Html.DropDownListFor(m => m.Role, "--Select a Cover Type",
-        new { @class = "form-control" })*@
+                        new { @class = "form-control" })*@
                     @Html.DropDownListFor(m => m.Role,
                     new SelectList(Enum.GetValues(typeof(RoleList))),
-                    "--Select a Cover Type")
+                    "--Select a Role for User")
                 </div>
             </div>
             <div class="form-group row">

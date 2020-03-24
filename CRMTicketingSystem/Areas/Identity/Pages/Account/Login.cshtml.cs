@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using CRMTicketingSystem.DataAccess.Repository.IRepository;
+using Microsoft.AspNetCore.Http;
+using CRMTicketingSystem.Utility;
 
 namespace CRMTicketingSystem.Areas.Identity.Pages.Account
 {
@@ -20,14 +23,21 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _unitofwork;
 
         public LoginModel(SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            IEmailSender emailSender,
+            IUnitOfWork unitofwork
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _emailSender = emailSender;
+            _unitofwork = unitofwork;
         }
 
         [BindProperty]
@@ -82,6 +92,10 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var user = _unitofwork.ApplicationUser.GetFirstOrDefault(u => u.Email == Input.Email);
+                    int count = _unitofwork.ShoppingCart.GetAll(u => u.ApplicationUserId == user.Id).Count();
+                    HttpContext.Session.SetInt32(SD.sessionShoppingCart, count);
+
                     _logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
