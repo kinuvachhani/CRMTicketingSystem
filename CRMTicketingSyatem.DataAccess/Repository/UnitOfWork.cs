@@ -22,6 +22,7 @@ namespace CRMTicketingSystem.DataAccess.Repository
             OrderHeader = new OrderHeaderRepository(_db);
             OrderDetails = new OrderDetailsRepository(_db);
             ShoppingCart = new ShoppingCartRepository(_db);
+            Ticket = new TicketRepository(_db);
         }
 
         public ICategoryRepository Category { get; private set; }
@@ -33,6 +34,7 @@ namespace CRMTicketingSystem.DataAccess.Repository
         public IOrderHeaderRepository OrderHeader { get; private set; }
         public IOrderDetailsRepository OrderDetails { get; private set; }
         public IShoppingCartRepository ShoppingCart { get; private set; }
+        public ITicketRepository Ticket { get; private set; }
 
         public void Dispose()
         {

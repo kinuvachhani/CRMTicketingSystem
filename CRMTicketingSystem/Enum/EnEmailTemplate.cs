@@ -7,10 +7,11 @@ namespace CRMTicketingSystem.Enum
 {
     public enum EnEmailTemplate
     {
-        AccountConfirm=0,
-        ForgotPassword=1,
-        OrderConfirm=2,
-        TicketReview=3,
-        TicketGenerate=4
+        AccountConfirm=1,
+        ForgotPassword=3,
+        OrderConfirm=7,
+        TicketGenerate = 4,
+        TicketReview =5,
+        TicketResolve=6
     }
 }

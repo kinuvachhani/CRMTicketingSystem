@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace CRMTicketingSystem.Models
@@ -9,10 +10,25 @@ namespace CRMTicketingSystem.Models
     {
         [Key]
         public int Id { get; set; }
+        [Required]
+        [Display(Name = "Problem Title")]
         public string Subject { get; set; }
+        [Required]
+        [Display(Name = "Problem Description")]
         public string  Description { get; set; }
+        [Required]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        public int TicketStatus { get; set; }
+        [Required]
+        public int ProductId { get; set; }
+
+        [ForeignKey("ProductId")]
+        public Product Product { get; set; }
         public DateTime CreatedDate { get; set; }
-        public int Status { get; set; }
+
         public string Review { get; set; }
+        public DateTime ReviewDate { get; set; }
     }
 }

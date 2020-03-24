@@ -28,8 +28,8 @@ namespace CRMTicketingSystem.Models
     public enum RoleList
     {
         Admin,
-        Company_Customer,
+        CompanyCustomer,
         Employee,
-        Individual_Customer
+        IndividualUser
     }
 }

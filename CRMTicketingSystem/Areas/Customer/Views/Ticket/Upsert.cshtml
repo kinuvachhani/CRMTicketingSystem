@@ -1,0 +1,63 @@
+﻿@model CRMTicketingSystem.Models.ViewModels.TicketVM
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<form method="post">
+    <div class="row p-3 border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">Create Ticket</h2>
+        </div>
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Ticket.Subject"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Ticket.Subject" class="form-control" />
+                    <span asp-validation-for="Ticket.Subject" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Ticket.Email"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Ticket.Email" class="form-control" />
+                    <span asp-validation-for="Ticket.Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Ticket.Description"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Ticket.Description" class="form-control" />
+                    <span asp-validation-for="Ticket.Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4">
+                    Product
+                </div>
+                <div class="col-8">
+                    @Html.DropDownListFor(m => m.Ticket.ProductId, Model.ProductList, "-Select a Product",
+                   new { @class = "form-control" })
+                    <span asp-validation-for="Ticket.ProductId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-8 offset-4">
+                    <partial name="_CreateAndBackToListBtn" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

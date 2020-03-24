@@ -22,12 +22,14 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         private readonly ApplicationDbContext _db;
         private readonly IUnitOfWork _unitofwork;
         RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(ApplicationDbContext db, IUnitOfWork unitOfwork, RoleManager<IdentityRole> roleManager)
+        public UserController(ApplicationDbContext db, IUnitOfWork unitOfwork, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
         {
             _db = db;
             _unitofwork = unitOfwork;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -50,22 +52,38 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ApplicationUser applicationUser)
-        { 
-            if (applicationUser.Id != null)
+        {
+            var user = _db.ApplicationUsers.FirstOrDefault(s => s.Id == applicationUser.Id);
+            var oldrole = _db.UserRoles.FirstOrDefault(s => s.UserId == user.Id);
+            var oldrolename = _db.Roles.FirstOrDefault(s => s.Id == oldrole.RoleId);
+            var newrole = _db.Roles.FirstOrDefault(s => s.Name == applicationUser.Role);
+            if (user != null)
             {
-                //var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == applicationUser.Id);
-                //var UserRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
-                //if(objFromDb.Id == UserRole.UserId)
-                //{
-                //    var role = _db.Roles.FirstOrDefault(i => i.Name == applicationUser.Role);
-                //    UserRole.RoleId = role.Id;
-                //    applicationUser.Role = role.Name;
-                //}
-                //_unitofwork.ApplicationUser.Update(applicationUser);
-                //_unitofwork.Save();
-                _unitofwork.Save();
+                if (!string.IsNullOrEmpty(oldrole.RoleId))
+                {
+                    _userManager.RemoveFromRoleAsync(user, oldrolename.Name).Wait();
+                }
+                _userManager.AddToRoleAsync(user, newrole.Name).Wait();
+
             }
-             return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));
+
+
+
+
+            //var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == applicationUser.Id);
+            //var UserRole = _db.UserRoles.FirstOrDefault(u => u.UserId == objFromDb.Id);
+            //if(objFromDb.Id == UserRole.UserId)
+            //{
+            //    var role = _db.Roles.FirstOrDefault(i => i.Name == applicationUser.Role);
+            //    UserRole.RoleId = role.Id;
+            //    applicationUser.Role = role.Name;
+            //}
+            //_unitofwork.ApplicationUser.Update(applicationUser);
+            //_unitofwork.Save();
+            //_unitofwork.Save();
+            //}
+            //return RedirectToAction(nameof(Index));
 
         }
 
