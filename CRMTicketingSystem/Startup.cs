@@ -16,6 +16,7 @@ using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.DataAccess.Repository;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using CRMTicketingSystem.Utility;
+using Stripe;
 
 namespace CRMTicketingSystem
 {
@@ -38,6 +39,7 @@ namespace CRMTicketingSystem
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();
@@ -88,7 +90,7 @@ namespace CRMTicketingSystem
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe")["SecretKey"];
             app.UseRouting();
             app.UseSession();
             app.UseAuthentication();
