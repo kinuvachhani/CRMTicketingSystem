@@ -15,6 +15,7 @@ namespace CRMTicketingSystem.Models
         public string TemplateName { get; set; }
 
         [Required]
+        [MaxLength(50)]
         public string Subject { get; set; }
 
         [Required]

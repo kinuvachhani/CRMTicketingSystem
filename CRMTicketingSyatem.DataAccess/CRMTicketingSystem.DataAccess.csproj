@@ -6,6 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200328054658_AddDiscountandQuantityToDatabase.cs" />
+    <Compile Remove="Migrations\20200328054658_AddDiscountandQuantityToDatabase.Designer.cs" />
+    <Compile Remove="Migrations\20200330065152_AddQuantitytodb.cs" />
+    <Compile Remove="Migrations\20200330065152_AddQuantitytodb.Designer.cs" />
+    <Compile Remove="Migrations\20200330070051_AddQuantitytodb.cs" />
+    <Compile Remove="Migrations\20200330070051_AddQuantitytodb.Designer.cs" />
+    <Compile Remove="Migrations\20200330070301_AddQuantitytodb1.cs" />
+    <Compile Remove="Migrations\20200330070301_AddQuantitytodb1.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.30" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.1" />

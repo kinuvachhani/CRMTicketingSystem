@@ -272,3 +272,22 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.input-container {
+    width: 250px;
+    border: 1px solid #a9a9a9;
+    display: inline-block;
+}
+
+    .input-container input:focus, .input-container input:active {
+        outline: none;
+    }
+
+    .input-container input {
+        width: 53%;
+        border: none;
+    }
+
+    .input-container button {
+        float: right;
+    }

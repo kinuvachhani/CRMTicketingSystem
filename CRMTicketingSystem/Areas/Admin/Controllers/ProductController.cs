@@ -101,6 +101,41 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                         productVM.Product.ImageUrl = objFromDb.ImageUrl;
                     }
                 }
+
+                //For book preview file uploade
+                string webRootPath1 = _hostEnvironment.WebRootPath;
+                var files1 = HttpContext.Request.Form.Files;
+                if (files1.Count > 0)
+                {
+                    string fileName1 = Guid.NewGuid().ToString();
+                    var uploads1 = Path.Combine(webRootPath1, @"PdfViewer\");
+                    var extension1 = Path.GetExtension(files1[1].FileName);
+
+                    if (productVM.Product.PreviewUrl != null)
+                    {
+                        //this is edit and need for remove older images
+                        var previewPath = Path.Combine(webRootPath1, productVM.Product.PreviewUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(previewPath))
+                        {
+                            System.IO.File.Delete(previewPath);
+                        }
+                    }
+                    using (var fileStreams1 = new FileStream(Path.Combine(uploads1, fileName1 + extension1), FileMode.Create))
+                    {
+                        files[1].CopyTo(fileStreams1);
+                    }
+                    productVM.Product.PreviewUrl = @"\PdfViewer\" + fileName1 + extension1;
+                }
+                else
+                {
+                    //update when not change image
+                    if (productVM.Product.Id != 0)
+                    {
+                        Product objFromDb = _unitofwork.Product.Get(productVM.Product.Id);
+                        productVM.Product.PreviewUrl = objFromDb.PreviewUrl;
+                    }
+                }
+
                 if (productVM.Product.Id == 0)
                 {
                     _unitofwork.Product.Add(productVM.Product);

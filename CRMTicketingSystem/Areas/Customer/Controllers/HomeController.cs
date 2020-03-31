@@ -12,19 +12,32 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using CRMTicketingSystem.Utility;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
+using Syncfusion.EJ2.PdfViewer;
+using System.IO;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace CRMTicketingSystem.Areas.Customer.Controllers
 {
+    [IgnoreAntiforgeryToken(Order = 1001)]
     [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitofwork;
+        [Obsolete]
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private IMemoryCache _cache;
 
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitofwork)
+        [Obsolete]
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitofwork,
+            IMemoryCache memoryCache, IHostingEnvironment hostingEnvironment)
         {
             _logger = logger;
             _unitofwork = unitofwork;
+            _cache = memoryCache;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         public IActionResult Index()
@@ -40,6 +53,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
 
                 HttpContext.Session.SetInt32(SD.sessionShoppingCart, count);
             }
+            //var product = new Product();
+            //ViewBag.Discount = (product.Price100 * 100) / product.ListPrice; 
             return View(productList);
         }
 

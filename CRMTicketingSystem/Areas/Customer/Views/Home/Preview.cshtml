@@ -1,0 +1,13 @@
+﻿@page "{handler?}"
+@model CRMTicketingSystem.Areas.Customer.Views.Home.PreviewModel
+@using Syncfusion.EJ2
+
+<div class="control-section">
+    <ejs-pdfviewer id="pdfviewer" serviceUrl="/Preview" documentPath="PDF Succinctly.pdf"></ejs-pdfviewer>
+</div>
+<style>
+    #pdfviewer {
+        height: 700px;
+        width: 100%;
+    }
+</style>
