@@ -10,20 +10,11 @@ namespace CRMTicketingSystem.Models
     public class ApplicationUser :IdentityUser
     {
         [Required]
-        [MaxLength(50)]
         public string Name { get; set; }
-        [Required]
         public string StreetAddress { get; set; }
-        [Required]
-        [MaxLength(50)]
         public string City { get; set; }
-        [Required]
-        [MaxLength(50)]
         public string State { get; set; }
-        [Required]
-        [MaxLength(50)]
         public string PostalCode { get; set; }
-        [Required]
         public int? CompanyId { get; set; }
 
         [ForeignKey("CompanyId")]

@@ -1,41 +1,72 @@
-﻿@model IEnumerable<CRMTicketingSystem.Models.Product>
+﻿@using CRMTicketingSystem.Utility
+@model IEnumerable<CRMTicketingSystem.Models.Product>
 
-    <div class="row pb-3 backgroundWhite">
+<div class="row pb-3 backgroundWhite">
 
-        @foreach(var product  in Model)
-        { 
-            <div class="col-lg-3 col-md-6">
-                <div class="row p-2">
-                    <div class="col-12  p-1" style="border:1px solid #008cba; border-radius: 5px;">
-                        <div class="card" style="border:0px;">
-                            <img src="@product.ImageUrl" class="card-img-top rounded" />
-                            <div class="pl-1">
-                                <p class="card-title h5"><b style="color:#2c3e50">@product.Title</b></p>
-                            </div>
+    @foreach (var product in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="row p-2">
+                <div class="col-12  p-1" style="border:1px solid #008cba; border-radius: 5px;">
+                    <div class="card" style="border:0px;">
+                        <img src="@product.ImageUrl" class="card-img-top rounded" />
+                        <div class="pl-1">
+                            <p class="card-title h5"><b style="color:#2c3e50">@product.Title</b></p>
+                        </div>
+                        <div style="padding-left:5px;">
+                            <p>List Price: <strike><b class="">₹@product.ListPrice.ToString("0.00")</b></strike></p>
+                        </div>
+                        <div style="padding-left:5px;">
+                            <p style="color:maroon">As low as: <b class="">₹@product.Price100.ToString("0.00")</b></p>
+                        </div>
+                    </div>
+
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <div style="padding-left:5px;">
+                            <p style="color:crimson">
+                                Remaining Quantity:  <b class="">@product.RemainingQuantity</b>&nbsp;
+                                <a asp-action="Plus" asp-route-productId="@product.Id" type="submit" class="btn btn-outline-success"
+                                   data-toggle="tooltip" title="Plus 1 Quantity">
+                                    <i class="fas fa-store"></i>
+                                </a>
+                                <a asp-action="minus" asp-route-productId="@product.Id" type="submit" class="btn btn-outline-warning"
+                                   data-toggle="tooltip" title="Minus 1 Quantity">
+                                    <i class="fas fa-store-alt"></i>
+                                </a>
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        if (product.RemainingQuantity == 0)
+                        {
                             <div style="padding-left:5px;">
-                                <p>List Price: <strike><b class="">₹@product.ListPrice.ToString("0.00")</b></strike></p>
+                                <p style="color:crimson">
+                                    out of stock
+                                </p>
                             </div>
+                        }
+                        else
+                        {
                             <div style="padding-left:5px;">
-                                <p style="color:maroon">As low as: <b class="">₹@product.Price100.ToString("0.00")</b></p>
+                            <p style="color:darkcyan">
+                                Remaining Quantity:  <b class="">@product.RemainingQuantity</b></p>
                             </div>
-                        </div>
-                        <div class="input-container">
-                            <input type="text" class="input-field" />
-                            <button class="input-button">Ok</button>
-                            <button class="input-button">Ok</button>
-                            <button class="input-button">Ok</button>
-                        </div>
-                        <br />
-                        <div>
-                            <a asp-action="Details" class="btn btn-primary form-control" asp-route-id="@product.Id">Details</a>
-                        </div>
-                        <br />
-                        <div>
-                            <a asp-area="Customer" asp-controller="PdfViewer" asp-action="Preview" class="btn btn-danger form-control">Preview</a>"
-                        </div>
+                        }
+                    }
+                    <div>
+                        <a asp-action="Details" class="btn btn-primary form-control" asp-route-id="@product.Id">Details</a>
                     </div>
                 </div>
             </div>
-        }
+        </div>
+    }
 
-    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>

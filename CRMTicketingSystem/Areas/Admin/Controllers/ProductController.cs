@@ -135,13 +135,14 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                         productVM.Product.PreviewUrl = objFromDb.PreviewUrl;
                     }
                 }
-
                 if (productVM.Product.Id == 0)
                 {
+                    productVM.Product.RemainingQuantity = productVM.Product.Quantity;
                     _unitofwork.Product.Add(productVM.Product);
                 }
                 else
                 {
+                    
                     _unitofwork.Product.Update(productVM.Product);
                 }
                 _unitofwork.Save();

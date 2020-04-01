@@ -274,7 +274,7 @@ body {
 }
 
 .input-container {
-    width: 250px;
+    width: 200px;
     border: 1px solid #a9a9a9;
     display: inline-block;
 }
@@ -284,7 +284,7 @@ body {
     }
 
     .input-container input {
-        width: 53%;
+        width: 40%;
         border: none;
     }
 

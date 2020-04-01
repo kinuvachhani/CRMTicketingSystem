@@ -46,8 +46,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             };
             ShoppingCartVM.OrderHeader.OrderTotal = 0;
             ShoppingCartVM.OrderHeader.ApplicationUser = _unitofwork.ApplicationUser
-                                                        .GetFirstOrDefault(u => u.Id == claim.Value,
-                                                        includeProperties: "Company");
+                                                       .GetFirstOrDefault(u => u.Id == claim.Value,
+                                                       includeProperties: "Company");
 
             foreach (var list in ShoppingCartVM.ListCart)
             {
@@ -97,6 +97,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             var cart = _unitofwork.ShoppingCart.GetFirstOrDefault(c => c.Id == cartId, includeProperties: "Product");
             cart.Count += 1;
             cart.Price = SD.GetPriceBasedOnQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
+            var product = _unitofwork.Product.GetFirstOrDefault(i => i.Id == cart.ProductId);
+            product.RemainingQuantity = product.RemainingQuantity - 1;
 
             _unitofwork.Save();
             return RedirectToAction(nameof(Index));
@@ -109,6 +111,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             {
                 var cnt = _unitofwork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count();
                 _unitofwork.ShoppingCart.Remove(cart);
+                var product = _unitofwork.Product.GetFirstOrDefault(i => i.Id == cart.ProductId);
+                product.RemainingQuantity = product.RemainingQuantity + 1;
                 _unitofwork.Save();
                 HttpContext.Session.SetInt32(SD.sessionShoppingCart, cnt - 1);
             }
@@ -116,7 +120,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             {
                 cart.Count -= 1;
                 cart.Price = SD.GetPriceBasedOnQuantity(cart.Count, cart.Product.Price, cart.Product.Price50, cart.Product.Price100);
-
+                var product = _unitofwork.Product.GetFirstOrDefault(i => i.Id == cart.ProductId);
+                product.RemainingQuantity = product.RemainingQuantity + 1;
                 _unitofwork.Save();
             }
             return RedirectToAction(nameof(Index));
@@ -127,6 +132,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             var cart = _unitofwork.ShoppingCart.GetFirstOrDefault(c => c.Id == cartId, includeProperties: "Product");
             var cnt = _unitofwork.ShoppingCart.GetAll(u => u.ApplicationUserId == cart.ApplicationUserId).ToList().Count();
             _unitofwork.ShoppingCart.Remove(cart);
+            var product = _unitofwork.Product.GetFirstOrDefault(i => i.Id == cart.ProductId);
+            product.RemainingQuantity = product.RemainingQuantity + cart.Count;
             _unitofwork.Save();
             HttpContext.Session.SetInt32(SD.sessionShoppingCart, cnt - 1);
             return RedirectToAction(nameof(Index));

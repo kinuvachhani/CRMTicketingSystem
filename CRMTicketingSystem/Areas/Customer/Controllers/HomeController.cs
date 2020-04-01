@@ -96,6 +96,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
                     cartFromDb.Count += CartObject.Count;
                     //_unitofwork.ShoppingCart.Update(cartFromDb);
                 }
+                var product = _unitofwork.Product.GetFirstOrDefault(i => i.Id == CartObject.ProductId);
+                product.RemainingQuantity = product.RemainingQuantity - CartObject.Count;
                 _unitofwork.Save();
 
                 var count = _unitofwork.ShoppingCart.GetAll(
@@ -118,6 +120,32 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
                 };
                 return View(cartObj);
             }
+        }
+
+        public IActionResult Minus(int productId)
+        {
+            var product = _unitofwork.Product.GetFirstOrDefault(c => c.Id == productId);
+            if(product.Quantity ==0 && product.RemainingQuantity ==0)
+            {
+                product.Quantity = 0;
+                product.RemainingQuantity = 0;
+            }
+            else 
+            {
+                product.Quantity -= 1;
+                product.RemainingQuantity -= 1;
+            }
+            _unitofwork.Save();
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Plus(int productId)
+        {
+            var product = _unitofwork.Product.GetFirstOrDefault(c => c.Id == productId);
+            product.Quantity += 1;
+            product.RemainingQuantity += 1;
+            _unitofwork.Save();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()

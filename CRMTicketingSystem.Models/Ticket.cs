@@ -18,9 +18,7 @@ namespace CRMTicketingSystem.Models
         public string  Description { get; set; }
         [Required]
         [Display(Name = "Email")]
-        [EmailAddress]
         public string Email { get; set; }
-        [Required]
         public int TicketStatus { get; set; }
         [Required]
         public int ProductId { get; set; }

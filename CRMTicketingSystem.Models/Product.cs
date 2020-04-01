@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -30,6 +29,9 @@ namespace CRMTicketingSystem.Models
         [Required]
         [Range(1, 10000)]
         public double Price100 { get; set; }
+        [RegularExpression("([1-9][0-9]*)", ErrorMessage = "Quantity must be a Positive number")]
+        public int Quantity { get; set; }
+        public int RemainingQuantity { get; set; }
         public string  ImageUrl { get; set; }
         public string PreviewUrl { get; set; }
         [Required]

@@ -35,6 +35,8 @@ namespace CRMTicketingSystem.DataAccess.Repository
                 ObjFromDb.Price50= product.Price50;
                 ObjFromDb.ListPrice= product.ListPrice;
                 ObjFromDb.Price100= product.Price100;
+                ObjFromDb.Quantity = product.Quantity;
+                ObjFromDb.RemainingQuantity = product.Quantity;
                 ObjFromDb.Title= product.Title;
                 ObjFromDb.Discription= product.Discription;
                 ObjFromDb.CategoryId= product.CategoryId;
