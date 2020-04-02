@@ -53,8 +53,7 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
 
                 HttpContext.Session.SetInt32(SD.sessionShoppingCart, count);
             }
-            //var product = new Product();
-            //ViewBag.Discount = (product.Price100 * 100) / product.ListPrice; 
+
             return View(productList);
         }
 

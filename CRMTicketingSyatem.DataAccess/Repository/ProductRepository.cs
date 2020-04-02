@@ -42,6 +42,7 @@ namespace CRMTicketingSystem.DataAccess.Repository
                 ObjFromDb.CategoryId= product.CategoryId;
                 ObjFromDb.Author= product.Author;
                 ObjFromDb.CoverTypeId= product.CoverTypeId;
+                ObjFromDb.Discount =100 - Math.Round(product.Price100 * 100 / product.ListPrice);
             }
         }
     }

@@ -71,100 +71,104 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             {
                 string webRootPath = _hostEnvironment.WebRootPath;
                 var files = HttpContext.Request.Form.Files;
-                var extension = Path.GetExtension(files[0].FileName);
-                if (extension == ".jpg" || extension == ".png" || extension == ".jpeg" || extension == ".jpg")
+                if (files.Count != 0)
                 {
-                    if (files.Count > 0)
+                    var extension = Path.GetExtension(files[0].FileName);
+                    if (extension == ".jpg" || extension == ".png" || extension == ".jpeg" || extension == ".jpg")
                     {
-                        string fileName = Guid.NewGuid().ToString();
-                        var uploads = Path.Combine(webRootPath, @"images\Products");
-
-                        if (productVM.Product.ImageUrl != null)
+                        if (files.Count > 0)
                         {
-                            //this is edit and need for remove older images
-                            var imagePath = Path.Combine(webRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
-                            if (System.IO.File.Exists(imagePath))
+                            string fileName = Guid.NewGuid().ToString();
+                            var uploads = Path.Combine(webRootPath, @"images\Products");
+
+                            if (productVM.Product.ImageUrl != null)
                             {
-                                System.IO.File.Delete(imagePath);
+                                //this is edit and need for remove older images
+                                var imagePath = Path.Combine(webRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+                                if (System.IO.File.Exists(imagePath))
+                                {
+                                    System.IO.File.Delete(imagePath);
+                                }
+                            }
+                            using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                            {
+                                files[0].CopyTo(fileStreams);
+                            }
+                            productVM.Product.ImageUrl = @"\images\Products\" + fileName + extension;
+                        }
+                        else
+                        {
+                            //update when not change image
+                            if (productVM.Product.Id != 0)
+                            {
+                                Product objFromDb = _unitofwork.Product.Get(productVM.Product.Id);
+                                productVM.Product.ImageUrl = objFromDb.ImageUrl;
                             }
                         }
-                        using (var fileStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
-                        {
-                            files[0].CopyTo(fileStreams);
-                        }
-                        productVM.Product.ImageUrl = @"\images\Products\" + fileName + extension;
+                    }
+
+                    //For book preview file uploade
+                    string webRootPath1 = _hostEnvironment.WebRootPath;
+                    var files1 = HttpContext.Request.Form.Files;
+                    string x = null;
+                    var extension1 = x;
+                    if (files.Count > 1)
+                    {
+                        extension1 = Path.GetExtension(files1[1].FileName);
                     }
                     else
                     {
-                        //update when not change image
-                        if (productVM.Product.Id != 0)
+                        extension1 = Path.GetExtension(files1[0].FileName);
+                    }
+                    if (extension1 == ".pdf")
+                    {
+                        if (files1.Count > 0)
                         {
-                            Product objFromDb = _unitofwork.Product.Get(productVM.Product.Id);
-                            productVM.Product.ImageUrl = objFromDb.ImageUrl;
+                            string fileName1 = Guid.NewGuid().ToString();
+                            var uploads1 = Path.Combine(webRootPath1, @"PdfViewer\");
+
+                            if (productVM.Product.PreviewUrl != null)
+                            {
+                                //this is edit and need for remove older files
+                                var previewPath = Path.Combine(webRootPath1, productVM.Product.PreviewUrl.TrimStart('\\'));
+                                if (System.IO.File.Exists(previewPath))
+                                {
+                                    System.IO.File.Delete(previewPath);
+                                }
+                            }
+                            using (var fileStreams1 = new FileStream(Path.Combine(uploads1, fileName1 + extension1), FileMode.Create))
+                            {
+                                if (files.Count > 1)
+                                {
+                                    files1[1].CopyTo(fileStreams1);
+                                }
+                                else
+                                {
+                                    files1[0].CopyTo(fileStreams1);
+                                }
+                            }
+                            productVM.Product.PreviewUrl = @"\PdfViewer\" + fileName1 + extension1;
+                        }
+                        else
+                        {
+                            //update when not change preview pdf
+                            if (productVM.Product.Id != 0)
+                            {
+                                Product objFromDb = _unitofwork.Product.Get(productVM.Product.Id);
+                                productVM.Product.PreviewUrl = objFromDb.PreviewUrl;
+                            }
                         }
                     }
                 }
 
-                //For book preview file uploade
-                string webRootPath1 = _hostEnvironment.WebRootPath;
-                var files1 = HttpContext.Request.Form.Files;
-                string x = null;
-                var extension1 = x;
-                if (files.Count > 1)
-                { 
-                    extension1 = Path.GetExtension(files1[1].FileName);
-                }
-                else
-                {
-                    extension1 = Path.GetExtension(files1[0].FileName);
-                }
-                if (extension1 == ".pdf")
-                {
-                    if (files1.Count > 0)
-                    {
-                        string fileName1 = Guid.NewGuid().ToString();
-                        var uploads1 = Path.Combine(webRootPath1, @"PdfViewer\");
-
-                        if (productVM.Product.PreviewUrl != null)
-                        {
-                            //this is edit and need for remove older files
-                            var previewPath = Path.Combine(webRootPath1, productVM.Product.PreviewUrl.TrimStart('\\'));
-                            if (System.IO.File.Exists(previewPath))
-                            {
-                                System.IO.File.Delete(previewPath);
-                            }
-                        }
-                        using (var fileStreams1 = new FileStream(Path.Combine(uploads1, fileName1 + extension1), FileMode.Create))
-                        {
-                            if (files.Count > 1)
-                            {
-                                files1[1].CopyTo(fileStreams1);
-                            }
-                            else
-                            {
-                                files1[0].CopyTo(fileStreams1);
-                            }
-                        }
-                        productVM.Product.PreviewUrl = @"\PdfViewer\" + fileName1 + extension1;
-                    }
-                    else
-                    {
-                        //update when not change preview pdf
-                        if (productVM.Product.Id != 0)
-                        {
-                            Product objFromDb = _unitofwork.Product.Get(productVM.Product.Id);
-                            productVM.Product.PreviewUrl = objFromDb.PreviewUrl;
-                        }
-                    }
-                }
                 if (productVM.Product.Id == 0)
                 {
                     productVM.Product.RemainingQuantity = productVM.Product.Quantity;
+                    productVM.Product.Discount = 100 - Math.Round(productVM.Product.Price100 * 100 / productVM.Product.ListPrice);
                     _unitofwork.Product.Add(productVM.Product);
                 }
                 else
                 {
-                    
                     _unitofwork.Product.Update(productVM.Product);
                 }
                 _unitofwork.Save();
