@@ -1,13 +1,14 @@
-﻿@page "{handler?}"
-@model CRMTicketingSystem.Areas.Customer.Views.Home.PreviewModel
-@using Syncfusion.EJ2
+﻿@{
+    ViewData["Title"] = "Preview Page";
+}
+<script type="text/javascript">
 
-<div class="control-section">
-    <ejs-pdfviewer id="pdfviewer" serviceUrl="/Preview" documentPath="PDF Succinctly.pdf"></ejs-pdfviewer>
-</div>
-<style>
-    #pdfviewer {
-        height: 700px;
-        width: 100%;
+    function OpenPDFHidingPath() {
+        window.open('@Url.Action("OpenPDF", "Home")', "", "width=700,height=600")
     }
-</style>
+</script>
+<div class="row">
+    <div class="col-md-6">
+        <h2>PDF Open with hiding Physical Path</h2> <a href="#" onclick="OpenPDFHidingPath()">Click here to Open PDF</a>
+    </div>
+</div>

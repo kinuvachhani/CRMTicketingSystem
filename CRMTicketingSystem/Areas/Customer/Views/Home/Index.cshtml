@@ -50,13 +50,17 @@
                         else
                         {
                             <div style="padding-left:5px;">
-                            <p style="color:darkcyan">
-                                Remaining Quantity:  <b class="">@product.RemainingQuantity</b></p>
+                                <p style="color:darkcyan">
+                                    Remaining Quantity:  <b class="">@product.RemainingQuantity</b>
+                                </p>
                             </div>
                         }
                     }
                     <div>
                         <a asp-action="Details" class="btn btn-primary form-control" asp-route-id="@product.Id">Details</a>
+                    </div>
+                    <div>
+                        <a asp-action="OpenPDF" class="btn btn-danger form-control" asp-route-id="@product.Id" target="_blank">Preview</a>
                     </div>
                 </div>
             </div>

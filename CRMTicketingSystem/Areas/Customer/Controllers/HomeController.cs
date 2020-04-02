@@ -58,6 +58,19 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             return View(productList);
         }
 
+        [HttpGet]
+        public FileResult OpenPDF(int id)
+        {
+            var productFromDb = _unitofwork.Product.
+                        GetFirstOrDefault(u => u.Id == id);
+            //"wwwroot/PdfViewer/Samplefile.PDF";
+            string PDFpath = @"wwwroot/" + productFromDb.PreviewUrl;
+            byte[] abc = System.IO.File.ReadAllBytes(PDFpath);
+            System.IO.File.WriteAllBytes(PDFpath, abc);
+            MemoryStream ms = new MemoryStream(abc);
+            return new FileStreamResult(ms, "application/pdf");
+        }
+
         public IActionResult Details(int id)
         {
             var productFromDb = _unitofwork.Product.
