@@ -19,7 +19,7 @@
                         <div style="padding-left:5px;">
                             <p style="color:maroon">
                                 As low as: <b class="">₹@product.Price100.ToString("0.00")</b>&nbsp;
-                                           <a style="color:mediumslateblue"><b>(@product.Discount% off)</b></a>
+                                <a style="color:mediumslateblue"><b>(@product.Discount% off)</b></a>
                             </p>
                         </div>
                     </div>
@@ -62,6 +62,7 @@
                     <div>
                         <a asp-action="Details" class="btn btn-primary form-control" asp-route-id="@product.Id">Details</a>
                     </div>
+                    <div class="pt-2"></div>
                     <div>
                         <a asp-action="OpenPDF" class="btn btn-danger form-control" asp-route-id="@product.Id" target="_blank">Preview</a>
                     </div>
