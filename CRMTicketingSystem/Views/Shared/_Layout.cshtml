@@ -14,11 +14,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
-    @* Syncfusion Essential JS 2 Styles *@
-    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css" />
-    @* Syncfusion Essential JS 2 Scripts *@
-    <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
-    <link rel='nofollow' href="https://cdn.syncfusion.com/ej2/17.2.49/material.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -50,7 +45,8 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="Admin" asp-controller="Ticket" asp-action="Index">Ticket</a>
                             </li>
-                        }@if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                        }
+                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -69,6 +65,19 @@
                                 <a class="nav-link" asp-area="Customer" asp-controller="Ticket" asp-action="Index">Ticket</a>
                             </li>
                         }
+
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
+                            @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                            {
+                                <span>Manage Order</span>
+                            }
+                            else
+                            {
+                                <span>Order History</span>
+                            }
+                            </a>
+                        </li>
 
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.sessionShoppingCart) != null)
                         {

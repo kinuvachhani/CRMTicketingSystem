@@ -189,7 +189,6 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             _unitofwork.OrderHeader.Add(ShoppingCartVM.OrderHeader);
             _unitofwork.Save();
 
-            List<OrderDetails> OrderDetailsList = new List<OrderDetails>();
             foreach(var item in ShoppingCartVM.ListCart)
             {
                 item.Price = SD.GetPriceBasedOnQuantity(item.Count, item.Product.Price, item.Product.Price50, 
