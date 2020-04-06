@@ -40,6 +40,7 @@ namespace CRMTicketingSystem
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
+            services.Configure<TwilioSettings>(Configuration.GetSection("Twilio"));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages();

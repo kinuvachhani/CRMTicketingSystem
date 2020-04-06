@@ -14,7 +14,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 using Stripe;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace CRMTicketingSystem.Areas.Customer.Controllers
 {
@@ -24,15 +27,18 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitofwork;
+        private TwilioSettings _twilioOptions { get; set; }
 
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
 
-        public CartController(UserManager<IdentityUser> userManager, IEmailSender emailSender, IUnitOfWork unitofwork)
+        public CartController(UserManager<IdentityUser> userManager, IEmailSender emailSender, 
+            IUnitOfWork unitofwork, IOptions<TwilioSettings> twilioOptions)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _unitofwork = unitofwork;
+            _twilioOptions = twilioOptions.Value;
         }
         public IActionResult Index()
         {
@@ -250,6 +256,20 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
 
         public IActionResult OrderConfirmation(int id)
         {
+            OrderHeader orderHeader = _unitofwork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
+            TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
+            try
+            {
+                var message = MessageResource.Create(
+                   from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
+                   to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
+                   body: "Order Placed on Bulky Book. Your Order ID:" + id);
+            }
+
+            catch (Exception x)
+            {
+             
+            }
             return View(id);
         }
     }
