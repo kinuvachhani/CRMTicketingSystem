@@ -46,10 +46,6 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            if(applicationuser.Role == "Employee")
-            {
-                return Json(new { success = false, message = "Admin can't Lock" });
-            }
             return View(applicationuser);
         }
 

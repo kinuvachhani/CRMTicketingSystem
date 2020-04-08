@@ -9,7 +9,10 @@ using CRMTicketingSystem.Models.ViewModels;
 using CRMTicketingSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Stripe;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace CRMTicketingSystem.Areas.Admin.Controllers
 {
@@ -20,10 +23,12 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         private readonly IUnitOfWork _unitofwork;
         [BindProperty]
         public OrderDetailsVM OrderVM { get; set; }
+        private TwilioSettings _twilioOptions { get; set; }
 
-        public OrderController(IUnitOfWork unitofwork)
+        public OrderController(IUnitOfWork unitofwork, IOptions<TwilioSettings> twilioOptions)
         {
             _unitofwork = unitofwork;
+            _twilioOptions = twilioOptions.Value;
         }
         public IActionResult Index()
         {
@@ -47,6 +52,24 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             OrderHeader orderHeader = _unitofwork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
             orderHeader.OrderStatus = SD.StatusInProcess;
             _unitofwork.Save();
+
+            //code sms in processing
+            TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
+            try
+            {
+                var message = MessageResource.Create(
+                   from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
+                   to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
+                   body: "\n"+"\n"+ "Hello "+ orderHeader.Name + "\n" +
+                   "We are start working on your order:- " +id +"\n" +
+                   "Quote: The books that the world calls immoral are books that show the world its own shame." );
+            }
+
+            catch (Exception x)
+            {
+
+            }
+
             return RedirectToAction("Index");
         }
 
@@ -60,10 +83,29 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             orderHeader.OrderStatus = SD.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
             _unitofwork.Save();
+
+            //code SMS for ShipOrder
+            TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
+            try
+            {
+                var message = MessageResource.Create(
+                   from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
+                   to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
+                   body: "\n" + "\n"+" Hello " + orderHeader.Name+ "\n" +
+                   "Your Order is being Shipped! Your Ship Id is:-" + orderHeader.Id +"\n"+
+                   "Quote: The more that you read, the more things you will know. The more that you learn, " +
+                   "the more places you’ll go.");
+            }
+
+            catch (Exception x)
+            {
+
+            }
+
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = SD.Role_Employee + "," + SD.Role_Admin)]
+        [Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
         public IActionResult CancelOrder(int id)
         {
             OrderHeader orderHeader = _unitofwork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
@@ -74,10 +116,17 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                     Amount = Convert.ToInt32(orderHeader.OrderTotal * 100),
                     Reason = RefundReasons.RequestedByCustomer,
                     Charge = orderHeader.TransactionId
-                };
-                var service = new RefundService();
-                Refund refund = service.Create(options);
 
+                };
+                try
+                {
+                    var service = new RefundService();
+                    Refund refund = service.Create(options);
+                }
+                catch(Exception x)
+                {
+
+                }
                 orderHeader.OrderStatus = SD.StatusRefunded;
                 orderHeader.PaymentStatus = SD.StatusRefunded;
             }
@@ -86,7 +135,26 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                 orderHeader.OrderStatus = SD.StatusCancelled;
                 orderHeader.PaymentStatus = SD.StatusCancelled;
             }
+
             _unitofwork.Save();
+
+            //code SMS for CancelOrder
+            TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
+            try
+            {
+                var message = MessageResource.Create(
+                   from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
+                   to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
+                   body: "\n" + "\n"+" Hello " + orderHeader.Name + "\n" +
+                   "Your Order is cancelled due some reasons but you keep purchasing book." + "\n" +
+                   "Quote: The unread story is not a story; it is little black marks on wood pulp. The reader, reading it, " +
+                   "makes it live: a live thing, a story");
+            }
+
+            catch (Exception x)
+            {
+
+            }
             return RedirectToAction("Index");
         }
 

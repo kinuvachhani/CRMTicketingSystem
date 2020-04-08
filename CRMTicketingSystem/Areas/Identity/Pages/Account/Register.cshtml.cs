@@ -128,7 +128,7 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                     State=Input.State,
                     PostalCode=Input.PostalCode,
                     Name=Input.Name,
-                    PhoneNumber=Input.PhoneNumber,
+                    PhoneNumber="+91"+Input.PhoneNumber,
                     Role=Input.Role
                 };
                 var result = await _userManager.CreateAsync(user, Input.Password);

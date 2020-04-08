@@ -20,6 +20,7 @@ namespace CRMTicketingSystem.DataAccess.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<EmailTemplate> EmailTemplates { get; set; }
+        public DbSet<SmsTemplate> SmsTemplates { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
