@@ -5,7 +5,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
+using CRMTicketingSystem.Enum;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Models.ViewModels;
 using CRMTicketingSystem.Utility;
@@ -27,18 +29,20 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitofwork;
+        private readonly ApplicationDbContext _db;
         private TwilioSettings _twilioOptions { get; set; }
 
         [BindProperty]
         public ShoppingCartVM ShoppingCartVM { get; set; }
 
         public CartController(UserManager<IdentityUser> userManager, IEmailSender emailSender, 
-            IUnitOfWork unitofwork, IOptions<TwilioSettings> twilioOptions)
+            IUnitOfWork unitofwork, IOptions<TwilioSettings> twilioOptions, ApplicationDbContext db)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _unitofwork = unitofwork;
             _twilioOptions = twilioOptions.Value;
+            _db = db;
         }
         public IActionResult Index()
         {
@@ -257,13 +261,16 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
         public IActionResult OrderConfirmation(int id)
         {
             OrderHeader orderHeader = _unitofwork.OrderHeader.GetFirstOrDefault(u => u.Id == id);
+            SmsTemplate smsTemplate = _db.SmsTemplates.Where(e => e.Id == Convert.ToInt32(EnSmsTemplate.OrderConfirmation)).FirstOrDefault();
+            //smsTemplate.Content = smsTemplate.Content.Replace("###Name###",orderHeader.Name);
+            //smsTemplate.Content = smsTemplate.Content.Replace("###Id###",orderHeader.Id);
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
             try
             {
                 var message = MessageResource.Create(
                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
                    to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
-                   body: "Order Placed on Bulky Book. Your Order ID:" + id);
+                   body: smsTemplate.Content + id);
             }
 
             catch (Exception x)

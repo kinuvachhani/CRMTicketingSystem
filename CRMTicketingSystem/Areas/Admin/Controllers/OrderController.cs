@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
+using CRMTicketingSystem.Enum;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Models.ViewModels;
 using CRMTicketingSystem.Utility;
@@ -21,14 +23,16 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
     public class OrderController : Controller
     {
         private readonly IUnitOfWork _unitofwork;
+        private readonly ApplicationDbContext _db;
         [BindProperty]
         public OrderDetailsVM OrderVM { get; set; }
         private TwilioSettings _twilioOptions { get; set; }
 
-        public OrderController(IUnitOfWork unitofwork, IOptions<TwilioSettings> twilioOptions)
+        public OrderController(IUnitOfWork unitofwork, IOptions<TwilioSettings> twilioOptions, ApplicationDbContext db)
         {
             _unitofwork = unitofwork;
             _twilioOptions = twilioOptions.Value;
+            _db = db;
         }
         public IActionResult Index()
         {
@@ -54,21 +58,23 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             _unitofwork.Save();
 
             //code sms in processing
+            SmsTemplate smsTemplate = _db.SmsTemplates.Where(e => e.Id == Convert.ToInt32(EnSmsTemplate.OrderInProcessing)).FirstOrDefault();
+            smsTemplate.Content = smsTemplate.Content.Replace("###Name###", orderHeader.Name);
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
             try
             {
                 var message = MessageResource.Create(
                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
                    to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
-                   body: "\n"+"\n"+ "Hello "+ orderHeader.Name + "\n" +
-                   "We are start working on your order:- " +id +"\n" +
-                   "Quote: The books that the world calls immoral are books that show the world its own shame." );
+                   body: smsTemplate.Content + orderHeader.Id);
+
             }
 
             catch (Exception x)
             {
 
             }
+
 
             return RedirectToAction("Index");
         }
@@ -85,16 +91,16 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             _unitofwork.Save();
 
             //code SMS for ShipOrder
+            SmsTemplate smsTemplate = _db.SmsTemplates.Where(e => e.Id == Convert.ToInt32(EnSmsTemplate.ShipOrder)).FirstOrDefault();
+            smsTemplate.Content = smsTemplate.Content.Replace("###Name###", orderHeader.Name);
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
             try
             {
                 var message = MessageResource.Create(
                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
                    to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
-                   body: "\n" + "\n"+" Hello " + orderHeader.Name+ "\n" +
-                   "Your Order is being Shipped! Your Ship Id is:-" + orderHeader.Id +"\n"+
-                   "Quote: The more that you read, the more things you will know. The more that you learn, " +
-                   "the more places you’ll go.");
+                   body: smsTemplate.Content + orderHeader.Id);
+
             }
 
             catch (Exception x)
@@ -139,16 +145,15 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             _unitofwork.Save();
 
             //code SMS for CancelOrder
+            SmsTemplate smsTemplate = _db.SmsTemplates.Where(e => e.Id == Convert.ToInt32(EnSmsTemplate.CancelOrder)).FirstOrDefault();
+            smsTemplate.Content = smsTemplate.Content.Replace("###Name###", orderHeader.Name);
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
             try
             {
                 var message = MessageResource.Create(
                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
                    to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber),
-                   body: "\n" + "\n"+" Hello " + orderHeader.Name + "\n" +
-                   "Your Order is cancelled due some reasons but you keep purchasing book." + "\n" +
-                   "Quote: The unread story is not a story; it is little black marks on wood pulp. The reader, reading it, " +
-                   "makes it live: a live thing, a story");
+                   body : smsTemplate.Content);
             }
 
             catch (Exception x)

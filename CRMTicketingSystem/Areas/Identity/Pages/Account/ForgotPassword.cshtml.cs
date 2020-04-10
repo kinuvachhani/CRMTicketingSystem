@@ -69,8 +69,8 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
 
                 // replace content data
                 TemplateData.Content = TemplateData.Content.Replace("###callbackUrl###", callbackUrl);
-                TemplateData.Content = TemplateData.Content.Replace("###Name###", appuser.Name);
-                TemplateData.Content = TemplateData.Content.Replace("###Email###", appuser.Email);
+                //TemplateData.Content = TemplateData.Content.Replace("###Name###", appuser.Name);
+                //TemplateData.Content = TemplateData.Content.Replace("###Email###", appuser.Email);
 
                 await _emailSender.SendEmailAsync(
                     Input.Email,

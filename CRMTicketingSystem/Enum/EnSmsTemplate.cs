@@ -7,12 +7,9 @@ namespace CRMTicketingSystem.Enum
 {
     public enum EnSmsTemplate
     {
-        UserAdd=1,
-        UserRole=2,
-        OrderConfirmation=3,
-        OrderInProcessing=4,
+        OrderConfirmation=1,
+        OrderInProcessing=2,
         ShipOrder=5,
-        OrderDelivered=6,
-        CancelOrder=7
+        CancelOrder=6
     }
 }
