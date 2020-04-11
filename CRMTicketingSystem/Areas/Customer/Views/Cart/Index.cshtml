@@ -70,9 +70,8 @@
 
                     <div class="card-footer">
                         <div class="card-footer row">
-                            @if (!Model.OrderHeader.ApplicationUser.EmailConfirmed
-                                && Model.OrderHeader.ApplicationUser.CompanyId != null
-                                && Model.OrderHeader.ApplicationUser.Company.IsAuthorizedCompany)
+                            @if (Model.OrderHeader.ApplicationUser.EmailConfirmed == false || Model.OrderHeader.ApplicationUser.CompanyId != null)
+                                //|| Model.OrderHeader.ApplicationUser.Company.IsAuthorizedCompany)
                             {
                                 <div class="col-8 text-danger">
                                     Email Must be confirmed for authorized customers!

@@ -67,11 +67,8 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
                 ticketVM.Ticket.TicketStatus = 1;
                 _unitOfWork.Save();
 
-                //Email send
                 EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketGenerate)).FirstOrDefault();
                 var appuser = _db.Tickets.FirstOrDefault(u => u.Email == ticketVM.Ticket.Email);
-                //replace data
-                //emailTemplate.Content = emailTemplate.Content.Replace("###review###", ticket.review);
                 _emailSender.SendEmailAsync(ticketVM.Ticket.Email, emailTemplate.Subject, emailTemplate.Content);
 
                 return RedirectToAction(nameof(Index));

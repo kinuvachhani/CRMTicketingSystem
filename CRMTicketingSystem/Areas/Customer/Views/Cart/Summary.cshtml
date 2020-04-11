@@ -87,7 +87,7 @@
                                 </h4>
                                 <ul class="list-group mb-3">
 
-                                    @{ var total = 0.0;}
+                                    
                                     @foreach (var details in Model.ListCart)
                                     {
                                         <li class="list-group-item d-flex justify-content-between">
@@ -118,7 +118,8 @@
                                 var OrderTotalForStripe = Model.OrderHeader.OrderTotal * 100;
                             }
 
-                            @if (Model.OrderHeader.ApplicationUser.Company == null ||
+                            @if (Model.OrderHeader.ApplicationUser.EmailConfirmed == false ||
+                                Model.OrderHeader.ApplicationUser.Company == null ||
                                !Model.OrderHeader.ApplicationUser.Company.IsAuthorizedCompany)
                             {
                                 <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"

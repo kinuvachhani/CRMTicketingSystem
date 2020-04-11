@@ -62,21 +62,12 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                EmailTemplate TemplateData = _db.EmailTemplates.
-                    Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.ForgotPassword)).FirstOrDefault();
-
+                //Email send
+                EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.ForgotPassword)).FirstOrDefault();
                 var appuser = _db.ApplicationUsers.FirstOrDefault(u => u.Email == Input.Email);
+                emailTemplate.Content = emailTemplate.Content.Replace("###CallbackUrl###", callbackUrl);
+                await _emailSender.SendEmailAsync(appuser.Email, emailTemplate.Subject, emailTemplate.Content);
 
-                // replace content data
-                TemplateData.Content = TemplateData.Content.Replace("###callbackUrl###", callbackUrl);
-                //TemplateData.Content = TemplateData.Content.Replace("###Name###", appuser.Name);
-                //TemplateData.Content = TemplateData.Content.Replace("###Email###", appuser.Email);
-
-                await _emailSender.SendEmailAsync(
-                    Input.Email,
-                    TemplateData.Subject,
-                    TemplateData.Content);
-                    //$"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

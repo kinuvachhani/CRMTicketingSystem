@@ -9,7 +9,6 @@ namespace CRMTicketingSystem.Enum
     {
         AccountConfirm=1,
         ForgotPassword=3,
-        OrderConfirm=7,
         TicketGenerate = 4,
         TicketReview =5,
         TicketResolve=6

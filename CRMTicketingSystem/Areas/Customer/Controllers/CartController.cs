@@ -96,8 +96,14 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
                 values: new { area = "Identity", userId = user.Id, code = code },
                 protocol: Request.Scheme);
 
-            await _emailSender.SendEmailAsync(user.Email, "Confirm your email", 
-                $"Please Confirm your Account by<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Click Here");
+            //Email send
+            EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.AccountConfirm)).FirstOrDefault();
+            var appuser = _db.ApplicationUsers.FirstOrDefault(u => u.Email == user.Email);
+            emailTemplate.Content = emailTemplate.Content.Replace("###Name###", appuser.Name);
+            emailTemplate.Content = emailTemplate.Content.Replace("###Email###", appuser.Email);
+            emailTemplate.Content = emailTemplate.Content.Replace("###CallbackUrl###", callbackUrl);
+            await _emailSender.SendEmailAsync(appuser.Email, emailTemplate.Subject, emailTemplate.Content);
+
             ModelState.AddModelError(string.Empty, "verification email sent. Please Check your email.");
             return RedirectToAction("Index");
         }

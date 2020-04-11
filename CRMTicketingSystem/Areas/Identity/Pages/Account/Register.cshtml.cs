@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
+using CRMTicketingSystem.Enum;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Utility;
 using Microsoft.AspNetCore.Authentication;
@@ -33,6 +35,7 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly ApplicationDbContext _db;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -41,7 +44,8 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager,
             IUnitOfWork unitOfWork,
-            IWebHostEnvironment hostEnvironment)
+            IWebHostEnvironment hostEnvironment,
+            ApplicationDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -50,6 +54,7 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
             _roleManager = roleManager;
             _unitOfWork = unitOfWork;
             _hostEnvironment = hostEnvironment;
+            _db = db;
         }
 
         [BindProperty]
@@ -174,38 +179,11 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                    //template code for email sending
-                    var PathToFile = _hostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString()
-                       + "Templates" + Path.DirectorySeparatorChar.ToString() + "EmailTemplates"
-                       + Path.DirectorySeparatorChar.ToString() + "Confirm_Account_Registration.html";
-
-                    var subject = "Confirm Account Registration";
-                    string HtmlBody = "";
-                    using (StreamReader streamReader = System.IO.File.OpenText(PathToFile))
-                    {
-                        HtmlBody = streamReader.ReadToEnd();
-                    }
-
-                    //{0} : Subject  
-                    //{1} : DateTime  
-                    //{2} : Name  
-                    //{3} : Email  
-                    //{4} : Message  
-                    //{5} : callbackURL  
-
-                    string Message = $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
-
-                    string messageBody = string.Format(HtmlBody,
-                        subject,
-                        String.Format("{0:dddd, d MMMM yyyy}", DateTime.Now),
-                        user.Name,
-                        user.Email,
-                        Message,
-                        callbackUrl
-                        );
-
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", messageBody);
+                    EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.AccountConfirm)).FirstOrDefault();
+                    emailTemplate.Content = emailTemplate.Content.Replace("###Name###", user.Name);
+                    emailTemplate.Content = emailTemplate.Content.Replace("###Email###", user.Email);
+                    emailTemplate.Content = emailTemplate.Content.Replace("###CallbackUrl###", callbackUrl);
+                    await _emailSender.SendEmailAsync(user.Email, emailTemplate.Subject, emailTemplate.Content);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

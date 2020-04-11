@@ -14,6 +14,9 @@ using Microsoft.Extensions.Logging;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using CRMTicketingSystem.Utility;
+using CRMTicketingSystem.DataAccess.Data;
+using CRMTicketingSystem.Enum;
+using CRMTicketingSystem.Models;
 
 namespace CRMTicketingSystem.Areas.Identity.Pages.Account
 {
@@ -25,12 +28,14 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitofwork;
+        private readonly ApplicationDbContext _db;
 
         public LoginModel(SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
             UserManager<IdentityUser> userManager,
             IEmailSender emailSender,
-            IUnitOfWork unitofwork
+            IUnitOfWork unitofwork,
+            ApplicationDbContext db
             )
         {
             _userManager = userManager;
@@ -38,6 +43,7 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _unitofwork = unitofwork;
+            _db = db;
         }
 
         [BindProperty]
@@ -137,10 +143,14 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
-                Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+            //Email send
+            EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.AccountConfirm)).FirstOrDefault();
+            var appuser = _db.ApplicationUsers.FirstOrDefault(u => u.Email == Input.Email);
+            emailTemplate.Content = emailTemplate.Content.Replace("###Name###", appuser.Name);
+            emailTemplate.Content = emailTemplate.Content.Replace("###Email###", appuser.Email);
+            emailTemplate.Content = emailTemplate.Content.Replace("###CallbackUrl###", callbackUrl);
+            await _emailSender.SendEmailAsync(appuser.Email, emailTemplate.Subject, emailTemplate.Content);
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
