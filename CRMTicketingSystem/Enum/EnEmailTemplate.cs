@@ -11,6 +11,7 @@ namespace CRMTicketingSystem.Enum
         ForgotPassword=3,
         TicketGenerate = 4,
         TicketReview =5,
-        TicketResolve=6
+        TicketResolve=6,
+        UserRole=7
     }
 }

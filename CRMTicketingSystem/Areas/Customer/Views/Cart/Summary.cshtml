@@ -95,12 +95,12 @@
                                                 <h6 class="my-0">@details.Product.Title</h6>
                                                 <small class="text-muted">Quantity: @details.Count</small>
                                             </div>
-                                            <span class="text-muted">₹@(details.Price * details.Count)</span>
+                                            <span class="text-muted">$@(details.Price * details.Count)</span>
                                         </li>
                                     }
                                         <li class="list-group-item d-flex justify-content-between bg-light">
                                             <small class="text-info">Total (INR)</small>
-                                            <strong class="text-info">₹@(Model.OrderHeader.OrderTotal)</strong>
+                                            <strong class="text-info">$@(Model.OrderHeader.OrderTotal)</strong>
                                         </li>
                                 </ul>
                             </div>

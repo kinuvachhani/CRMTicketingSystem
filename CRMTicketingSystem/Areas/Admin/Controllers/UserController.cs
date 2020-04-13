@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
+using CRMTicketingSystem.Enum;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Models.ViewModels;
 using CRMTicketingSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,13 +25,19 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         private readonly IUnitOfWork _unitofwork;
         RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IEmailSender _emailSender;
 
-        public UserController(ApplicationDbContext db, IUnitOfWork unitOfwork, RoleManager<IdentityRole> roleManager, UserManager<IdentityUser> userManager)
+        public UserController(ApplicationDbContext db, 
+            IUnitOfWork unitOfwork, 
+            RoleManager<IdentityRole> roleManager, 
+            UserManager<IdentityUser> userManager,
+            IEmailSender emailSender)
         {
             _db = db;
             _unitofwork = unitOfwork;
             _roleManager = roleManager;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         public IActionResult Index()
@@ -64,6 +72,20 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                     _userManager.RemoveFromRoleAsync(user, oldrolename.Name).Wait();
                 }
                 _userManager.AddToRoleAsync(user, newrole.Name).Wait();
+
+                var userId = _userManager.GetUserIdAsync(user);
+                var code = _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var callbackUrl = Url.Page(
+                    "/Account/Login",
+                    pageHandler: null,
+                    values: new { userId = userId, code = code },
+                    protocol: Request.Scheme);
+
+                EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.UserRole)).FirstOrDefault();
+                emailTemplate.Content = emailTemplate.Content.Replace("###Name###", user.Name);
+                emailTemplate.Content = emailTemplate.Content.Replace("###Role###", applicationUser.Role);
+                emailTemplate.Content = emailTemplate.Content.Replace("###CallbackUrl###", callbackUrl);
+                _emailSender.SendEmailAsync(user.Email, emailTemplate.Subject, emailTemplate.Content);
 
             }
             return RedirectToAction(nameof(Index));
