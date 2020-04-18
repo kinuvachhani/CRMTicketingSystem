@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.Enum;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Models.ViewModels;
+using CRMTicketingSystem.Utility;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -42,6 +44,12 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
                     Value = i.Id.ToString()
                 })
             };
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(i => i.Id == claim.Value);
+            ticketVM.Ticket.Email = user.Email;
+            _unitOfWork.Save();
 
             if (id == null)
             {
@@ -88,5 +96,33 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             }
             return View(ticketVM);
         }
+
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            IEnumerable<Ticket> ticketList;
+
+            if (User.IsInRole(SD.Role_Admin))
+            {
+                ticketList = _unitOfWork.Ticket.GetAll(includeProperties: "Product");
+            }
+            else
+            {
+                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(i => i.Id == claim.Value);
+                ticketList = _unitOfWork.Ticket.GetAll(u => u.Email == user.Email, includeProperties: "Product");
+                for (var i = 0; i < ticketList.Count(); i++)
+                {
+                   
+                }
+            }
+            return Json(new { data = ticketList });
+        }
+
+        #endregion
     }
 }
