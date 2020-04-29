@@ -6,6 +6,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using CRMTicketingSystem.DataAccess.Data;
+using CRMTicketingSystem.Enum;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Utility;
 using Microsoft.AspNetCore.Authorization;
@@ -25,17 +27,20 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly ApplicationDbContext _db;
 
         public ExternalLoginModel(
             SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext db)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _db = db;
         }
 
         [BindProperty]
@@ -140,7 +145,7 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                     State = Input.State,
                     PostalCode = Input.PostalCode,
                     Name = Input.Name,
-                    PhoneNumber = Input.PhoneNumber
+                    PhoneNumber = "+91" + Input.PhoneNumber
                 };
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
@@ -167,8 +172,14 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                             values: new { area = "Identity", userId = userId, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.AccountConfirm)).FirstOrDefault();
+                        emailTemplate.Content = emailTemplate.Content.Replace("###Name###", user.Name);
+                        emailTemplate.Content = emailTemplate.Content.Replace("###Email###", user.Email);
+                        emailTemplate.Content = emailTemplate.Content.Replace("###CallbackUrl###", callbackUrl);
+                        await _emailSender.SendEmailAsync(user.Email, emailTemplate.Subject, emailTemplate.Content);
+
+                        //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                        //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                         return LocalRedirect(returnUrl);
                     }

@@ -112,8 +112,8 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
+                    ModelState.AddModelError(string.Empty, "You are Locked. Unlocking your account please contact our Support.");
+                    return Page();
                 }
                 else
                 {
