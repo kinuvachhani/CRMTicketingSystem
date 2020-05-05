@@ -17,6 +17,10 @@ using Syncfusion.EJ2.PdfViewer;
 using System.IO;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using CRMTicketingSystem.DataAccess.Data;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using CRMTicketingSystem.Enum;
 
 namespace CRMTicketingSystem.Areas.Customer.Controllers
 {
@@ -26,18 +30,31 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitofwork;
+        private readonly ApplicationDbContext _db;
+        private readonly IEmailSender _emailSender;
         [Obsolete]
         private readonly IHostingEnvironment _hostingEnvironment;
         private IMemoryCache _cache;
 
         [Obsolete]
-        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitofwork,
-            IMemoryCache memoryCache, IHostingEnvironment hostingEnvironment)
+        public HomeController(ILogger<HomeController> logger, 
+            IUnitOfWork unitofwork,
+            IMemoryCache memoryCache, 
+            IHostingEnvironment hostingEnvironment,
+            ApplicationDbContext db,
+            IEmailSender emailSender)
         {
             _logger = logger;
             _unitofwork = unitofwork;
             _cache = memoryCache;
             _hostingEnvironment = hostingEnvironment;
+            _db = db;
+            _emailSender = emailSender;
+        }
+
+        public IActionResult Help()
+        {
+            return View();
         }
 
         public IActionResult Index()
@@ -169,6 +186,51 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        //Customer Help
+        public IActionResult Contact(int? id)
+        {
+            Help help = new Help();
+            if (id == null)
+            {
+                //this is for create
+                return View(help);
+            }
+            if (help == null)
+            {
+                return NotFound();
+            }
+            return View(help);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Contact(Help help)
+        {
+            if (ModelState.IsValid)
+            {
+                _unitofwork.Help.Add(help);
+                help.CreatedDate = DateTime.Now;
+                help.TicketStatus = 1;
+                _db.SaveChanges();
+
+                EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketGenerate)).FirstOrDefault();
+                var appuser = _db.Helps.FirstOrDefault(u => u.Email == help.Email);
+                _emailSender.SendEmailAsync(help.Email, emailTemplate.Subject, emailTemplate.Content);
+
+                return RedirectToAction("Index", "Home");
+
+            }
+            else
+            {
+                if (help.Id != 0)
+                {
+                    help = _unitofwork.Help.Get(help.Id);
+                }
+            }
+            return View(help);
         }
     }
 }

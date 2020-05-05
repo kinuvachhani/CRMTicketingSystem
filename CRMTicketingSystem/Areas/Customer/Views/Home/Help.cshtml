@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Help & Support";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    <div class="border p-3">
+        <div class="d-flex justify-content-between mb-10">
+            <div class="p-2">
+                <h2 class="text-primary">FAQ for customer help related to Non-Order </h2>
+            </div>
+            <div class="p-2">
+                    <div class="row">
+                        <div class="col">
+                            <a asp-action="Contact" class="btn btn-success form-control ">  Contact Us </a>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div class="row p-3 border">
+        <ul>
+            <li>
+                <h5 style="color:seagreen"><b>MY RETURN WAS PICKED UP BUT I HAVEN'T RECEIVED MY REFUND YET</b></h5>
+                <p>
+                    -- Refund will be initiated after we receive the item and it passes the quality check.
+                    <br />-- Refund will be reach us +1 to 3 business days.
+                </p>
+            </li>
+            <li>
+                <h5 style="color:seagreen"><b>I AM UNABLE TO LOGIN TO MY ACCOUNT</b></h5>
+                <p>
+                    -- You can recover your password using the "Forgot Password" link in the login page.
+                    <br />-- If you still unable to access your account, then please fill up the Contact us form.
+                </p>
+            </li>
+            <li>
+                <h5 style="color:seagreen"><b>I AM LOCKED I CAN'T ACCESS MY ACCOUNT</b></h5>
+                <p>
+                    -- Sorry, For Locking Your Account. Due to some reason we locked you but now you can request for accessing your account on "Contact Us".
+                </p>
+            </li>
+            <li>
+                <h5 style="color:seagreen"><b>I WANT SOME EXTRA SECURITY ON MY ACCOUNT.</b></h5>
+                <p>
+                    -- Yes, you can Login to your account and open profile then Two Factor Authentication is given.
+                    <br />1) click that and Setup Authenticator app.
+                    <br />2) SetUp Authenticator on your Account.
+                    <br />3) Download "Google Authenticator" or "Microsoft Authenticator" app on your mobile.
+                    <br />4) Now scan boarcode which is given in profile.
+                    <br />5) Then add code in your account. now two factor is adding to your account.
+                </p>
+            </li>
+        </ul>
+    </div>
+
+</form>

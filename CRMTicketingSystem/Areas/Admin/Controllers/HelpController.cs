@@ -15,13 +15,13 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.Role_Admin)]
-    public class TicketController : Controller
+    public class HelpController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _db;
         private readonly IEmailSender _emailSender;
 
-        public TicketController(IUnitOfWork unitOfWork, ApplicationDbContext db, IEmailSender emailSender)
+        public HelpController(IUnitOfWork unitOfWork, ApplicationDbContext db, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
             _db = db;
@@ -39,25 +39,25 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
 
         public IActionResult Review(int id)
         {
-            Ticket ticket = new Ticket();
+            Help help = new Help();
             //this is for edit
-            ticket = _unitOfWork.Ticket.GetFirstOrDefault(i=>i.Id==id);
-            if (ticket != null && ticket.TicketStatus == 9)
+            help = _unitOfWork.Help.GetFirstOrDefault(i=>i.Id==id);
+            if (help != null && help.TicketStatus == 9)
             {
                 return RedirectToAction("Reviewed", "Ticket");
             }
-            return View(ticket);
+            return View(help);
 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Review(Ticket ticket)
+        public IActionResult Review(Help help)
         {
-            var temp = _unitOfWork.Ticket.GetFirstOrDefault(i => i.Id == ticket.Id);
-            temp.Review = ticket.Review;
+            var temp = _unitOfWork.Help.GetFirstOrDefault(i => i.Id == help.Id);
+            temp.Review = help.Review;
 
-            _unitOfWork.Ticket.Update(temp);
+            _unitOfWork.Help.Update(help);
             _unitOfWork.Save();
 
             EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketReview)).FirstOrDefault();
@@ -71,7 +71,7 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult Resolve(int id)
         {
-            var objFromDb = _db.Tickets.FirstOrDefault(s => s.Id == id);
+            var objFromDb = _db.Helps.FirstOrDefault(s => s.Id == id);
             if (objFromDb != null)
             {
                 if(objFromDb.TicketStatus==9)
@@ -82,7 +82,7 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                 _unitOfWork.Save();
 
                 EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketResolve)).FirstOrDefault();
-                var appuser = _db.Tickets.FirstOrDefault(u => u.Email == objFromDb.Email);
+                var appuser = _db.Helps.FirstOrDefault(u => u.Email == objFromDb.Email);
                 _emailSender.SendEmailAsync(objFromDb.Email, emailTemplate.Subject, emailTemplate.Content);
 
                 return Json(new { success = true, message = "Resolve Successful." });
@@ -96,7 +96,7 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var allObj = _unitOfWork.Ticket.GetAll(includeProperties: "Product");
+            var allObj = _unitOfWork.Help.GetAll();
             return Json(new { data = allObj });
         }
         #endregion

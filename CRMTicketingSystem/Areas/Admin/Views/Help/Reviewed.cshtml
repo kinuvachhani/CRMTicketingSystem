@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Reviewed";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    <center>
+        <div class="row p-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="col-12 ">
+                <h2 class="text-primary">Help Ticket Resolved</h2>
+            </div>
+            <div class="p-1"></div>
+            <div class="col-12 ">
+                <p class="text-danger">Ticket is reviewed and resolved by admin so now you can not further add review in this ticket .</p>
+            </div>
+            <div class="p-3"></div>
+            <a asp-action="Index" class="btn btn-success form-control">Back to List</a>
+        </div>
+    </center>
+</form>

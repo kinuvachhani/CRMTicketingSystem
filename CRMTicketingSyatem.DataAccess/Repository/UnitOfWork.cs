@@ -23,6 +23,7 @@ namespace CRMTicketingSystem.DataAccess.Repository
             OrderDetails = new OrderDetailsRepository(_db);
             ShoppingCart = new ShoppingCartRepository(_db);
             Ticket = new TicketRepository(_db);
+            Help = new HelpRepository(_db);
         }
 
         public ICategoryRepository Category { get; private set; }
@@ -35,6 +36,7 @@ namespace CRMTicketingSystem.DataAccess.Repository
         public IOrderDetailsRepository OrderDetails { get; private set; }
         public IShoppingCartRepository ShoppingCart { get; private set; }
         public ITicketRepository Ticket { get; private set; }
+        public IHelpRepository Help { get; private set; }
 
         public void Dispose()
         {

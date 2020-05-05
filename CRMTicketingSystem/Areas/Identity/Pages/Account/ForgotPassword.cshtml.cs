@@ -45,7 +45,8 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(Input.Email);
+                var user = _db.ApplicationUsers.Where(i => i.Email == Input.Email).FirstOrDefault();
+                //var user = await _userManager.FindByEmailAsync(Input.Email);
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed

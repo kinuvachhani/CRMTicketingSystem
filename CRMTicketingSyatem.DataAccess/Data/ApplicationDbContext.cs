@@ -25,6 +25,7 @@ namespace CRMTicketingSystem.DataAccess.Data
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<OrderDetails> OrderDetails { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Help> Helps { get; set; }
     }
 
 }

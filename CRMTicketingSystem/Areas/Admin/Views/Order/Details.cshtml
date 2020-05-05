@@ -4,7 +4,7 @@
 
 @inject IOptions<CRMTicketingSystem.Utility.StripeSettings> Stripe
 
-<form method="post">
+<form method="post"  autocomplete="off">
     <input hidden asp-for="OrderHeader.Id" />
     <br />
     <div class="backgroundWhite container">

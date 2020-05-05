@@ -11,11 +11,11 @@
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
-                    <div class="h3 mb-3 font-weight-normal text-primary p-4" style="text-align:center;">Sign In</div>
+                        <div class="h3 mb-3 font-weight-normal text-primary p-5" style="text-align:center;">Sign In</div>       
                 }
                 else
                 {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal" autocomplete="off">
                         <div class="h3 mb-3 font-weight-normal text-primary" style="text-align:center;">Sign In</div>
                         <div class="social-btn-login pb-0 mb-0">
                             @foreach (var provider in Model.ExternalLogins)
@@ -55,7 +55,7 @@
         </section>
         <section>
             <div class="p-2"></div>
-            <form id="account" method="post">
+            <form id="account" method="post" autocomplete="off">
                 <input asp-for="Input.Email" placeholder="Email..." type="email" class="mb-1 form-control" />
                 <div class="p-2"></div>
                 <input asp-for="Input.Password" placeholder="Password..." type="password" class="form-control" />

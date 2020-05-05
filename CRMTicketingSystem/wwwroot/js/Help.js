@@ -8,11 +8,10 @@ $(document).ready(function () {
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
-            "url": "/Admin/Ticket/GetAll"
+            "url": "/Admin/Help/GetAll"
         },
         "columns": [
             { "data": "subject", "width": "10%" },
-            { "data": "product.title", "width": "10%" },
             { "data": "email", "width": "20%" },
             { "data": "description", "width": "15%" },
             { "data": "createdDate", "width": "15%" },
@@ -21,25 +20,13 @@ function loadDataTable() {
                 "render": function (data) {
                     return `
                             <div class="text-center">
-                                <a href="/Admin/Ticket/Review/${data}" class="btn btn-success text-white" style="cursor:pointer">
+                                <a href="/Admin/Help/Review/${data}" class="btn btn-success text-white" style="cursor:pointer">
                                     <i class="fas fa-edit"></i> Review
                                 </a>                               
                             </div>                           
                            `;
-                }, "width": "15%"
+                }, "width": "20%"
             },
-            //{
-            //    "data": "id",
-            //    "render": function (data) {
-            //        return `
-            //                <div class="text-center">
-            //                    <a onclick=Review('${data.id}') class="btn btn-success text-white" style="cursor:pointer">
-            //                        <i class="fas fa-edit"></i> Review
-            //                    </a>                               
-            //                </div>                           
-            //               `;
-            //    }, "width": "15%"
-            //},
             {
                 
                 "data": {
@@ -67,7 +54,7 @@ function loadDataTable() {
                     }
 
                 },
-                "width": "15%"
+                "width": "20%"
             }
         ]
     });
@@ -77,7 +64,7 @@ function Resolve(id) {
 
     $.ajax({
         type: "GET",
-        url: '/Admin/Ticket/Resolve/' + id,
+        url: '/Admin/Help/Resolve/' + id,
         contentType: "application/json",
         success: function (data) {
             if (data.success) {
@@ -91,21 +78,3 @@ function Resolve(id) {
     });
 
 }
-
-//function Review(id) {
-//    $.ajax({
-//        type: "GET",
-//        url: '/Admin/Ticket/Review/' + id,
-//        contentType: "application/json",
-//        success: function (data) {
-//            if (data.success) {
-//                toastr.success(data.message);
-//                dataTable.ajax.reload();
-//            }
-//            else {
-//                toastr.error(data.message);
-//            }
-//        }
-
-//    })
-//}

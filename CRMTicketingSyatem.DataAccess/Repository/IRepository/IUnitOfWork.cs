@@ -16,6 +16,7 @@ namespace CRMTicketingSystem.DataAccess.Repository.IRepository
         IOrderHeaderRepository OrderHeader { get; }
         IShoppingCartRepository ShoppingCart { get; }
         ITicketRepository Ticket { get; }
+        IHelpRepository Help { get; }
         void Save();
     }
 }
