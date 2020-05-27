@@ -27,7 +27,10 @@ namespace CRMTicketingSystem.Models
         public DateTime PaymentDueDate { get; set; }
         public string TransactionId { get; set; }
 
-        [Required]
+        [DataType(DataType.PhoneNumber)]
+        [Required(ErrorMessage = "Phone Number Required!")]
+        [RegularExpression(@"^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$",
+                   ErrorMessage = "Entered phone format is not valid.")]
         public string PhoneNumber { get; set; }
         [Required]
         public string StreetAddress { get; set; }

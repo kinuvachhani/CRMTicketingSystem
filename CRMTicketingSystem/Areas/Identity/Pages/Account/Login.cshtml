@@ -11,12 +11,14 @@
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {
-                        <div class="h3 mb-3 font-weight-normal text-primary p-5" style="text-align:center;">Sign In</div>       
+                        <div class="h3 mb-3 font-weight-normal text-primary p-5" style="text-align:center;">Sign In</div>
+                        <div class="validation-summary-errors" asp-validation-summary="All" class="text-danger"></div>
                 }
                 else
                 {
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal" autocomplete="off">
                         <div class="h3 mb-3 font-weight-normal text-primary" style="text-align:center;">Sign In</div>
+                        <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="social-btn-login pb-0 mb-0">
                             @foreach (var provider in Model.ExternalLogins)
                             {
@@ -69,7 +71,7 @@
                     Resend Email Confirmation
                 </button>
                 <div class="p-2"></div>
-                <div asp-validation-summary="All" class="text-danger"></div>
+                @*<div asp-validation-summary="All" class="text-danger"></div>*@
                 <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-primary text-white">
                     <i class="fas fa-user-plus"></i> Register as a new user
                 </a>
@@ -81,3 +83,12 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+
+<style type="text/css">
+    .validation-summary-errors li {
+        list-style: none;
+        margin: 0;
+        padding: 5px -10px 5px 0px;
+        color:red;
+    }
+</style>

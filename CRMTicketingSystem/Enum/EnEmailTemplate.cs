@@ -12,6 +12,7 @@ namespace CRMTicketingSystem.Enum
         TicketGenerate = 4,
         TicketReview =5,
         TicketResolve=6,
-        UserRole=7
+        UserRole=7,
+        TwoFAmail=8
     }
 }

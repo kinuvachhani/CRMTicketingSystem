@@ -213,7 +213,7 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             {
                 _unitofwork.Help.Add(help);
                 help.CreatedDate = DateTime.Now;
-                help.TicketStatus = 1;
+                help.TicketStatus = "1";
                 _db.SaveChanges();
 
                 EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketGenerate)).FirstOrDefault();

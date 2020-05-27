@@ -14,6 +14,7 @@ using CRMTicketingSystem.DataAccess.Data;
 using System.Linq;
 using CRMTicketingSystem.Enum;
 using CRMTicketingSystem.Models;
+using System.Net;
 
 namespace CRMTicketingSystem.Areas.Identity.Pages.Account
 {
@@ -46,7 +47,7 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = _db.ApplicationUsers.Where(i => i.Email == Input.Email).FirstOrDefault();
-                //var user = await _userManager.FindByEmailAsync(Input.Email);
+
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
@@ -56,12 +57,14 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
 
                 // For more information on how to enable account confirmation and password reset please 
                 // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebUtility.UrlEncode(code);
+                var email = user.Email;
+                //code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 var callbackUrl = Url.Page(
                     "/Account/ResetPassword",
                     pageHandler: null,
-                    values: new { area = "Identity", code },
+                    values: new { area = "Identity", code, email },
                     protocol: Request.Scheme);
 
                 //Email send

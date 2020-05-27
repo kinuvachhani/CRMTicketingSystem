@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,20 +19,22 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
     public class ResetPasswordModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUnitOfWork _unitofwork;
 
-        public ResetPasswordModel(UserManager<IdentityUser> userManager)
+        public ResetPasswordModel(UserManager<IdentityUser> userManager, IUnitOfWork unitofwork)
         {
             _userManager = userManager;
+            _unitofwork = unitofwork;
         }
-
+        public string Email { get; set; }
         [BindProperty]
         public InputModel Input { get; set; }
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            //[Required]
+            //[EmailAddress]
+            //public string Email { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -42,10 +47,12 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             public string Code { get; set; }
+            //public string Email { get; set; }
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet(string code = null, string email=null)
         {
+            
             if (code == null)
             {
                 return BadRequest("A code must be supplied for password reset.");
@@ -54,8 +61,11 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
             {
                 Input = new InputModel
                 {
-                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                    //Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                    //Code = _userManager.GenerateEmailConfirmationTokenAsync()
+                    Code = code
                 };
+                Email = email;
                 return Page();
             }
         }
@@ -66,15 +76,22 @@ namespace CRMTicketingSystem.Areas.Identity.Pages.Account
             {
                 return Page();
             }
+            var user = await _userManager.FindByEmailAsync(Email);
 
-            var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                ModelState.AddModelError(string.Empty, "User not Exist. You Registered your account first.");
+            }
+            Input.Code = WebUtility.UrlDecode(Input.Code);
+            var Result = await _userManager.ConfirmEmailAsync(user, Input.Code);
+            if (!Result.Succeeded)
             {
                 // Don't reveal that the user does not exist
                 return RedirectToPage("./ResetPasswordConfirmation");
             }
 
-            var result = await _userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+            var result = await _userManager.ResetPasswordAsync(user,Input.Code ,Input.Password);
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");

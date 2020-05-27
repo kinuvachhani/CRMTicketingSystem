@@ -17,7 +17,7 @@ function loadDataTable() {
             { "data": "description", "width": "15%" },
             { "data": "createdDate", "width": "15%" },
             { "data": "review", "width": "10%" },
-            {"data":"ticketStatus", "width":"10%"}
+            {"data":"status", "width":"10%"}
         ]
     });
 }

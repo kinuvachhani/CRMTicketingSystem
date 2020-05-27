@@ -42,7 +42,7 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             Help help = new Help();
             //this is for edit
             help = _unitOfWork.Help.GetFirstOrDefault(i=>i.Id==id);
-            if (help != null && help.TicketStatus == 9)
+            if (help != null && help.TicketStatus == "9")
             {
                 return RedirectToAction("Reviewed", "Ticket");
             }
@@ -74,11 +74,11 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             var objFromDb = _db.Helps.FirstOrDefault(s => s.Id == id);
             if (objFromDb != null)
             {
-                if(objFromDb.TicketStatus==9)
+                if(objFromDb.TicketStatus== "9")
                 {
                     return Json(new { success = false, message = "Ticket Already Resolved." });
                 }
-                objFromDb.TicketStatus = 9;
+                objFromDb.TicketStatus = "9";
                 _unitOfWork.Save();
 
                 EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketResolve)).FirstOrDefault();

@@ -34,7 +34,7 @@ function loadDataTable() {
                 },
                 "render": function (data) {
                     var ticketStatus =data.ticketStatus;
-                    if (ticketStatus == 9) {
+                    if (ticketStatus == "9") {
                         return `
                             <div class="text-center">
                                 <a onclick=Resolve('${data.id}') class="btn btn-danger text-white" style="cursor:pointer; width:100px;">

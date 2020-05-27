@@ -28,18 +28,6 @@ function loadDataTable() {
                            `;
                 }, "width": "15%"
             },
-            //{
-            //    "data": "id",
-            //    "render": function (data) {
-            //        return `
-            //                <div class="text-center">
-            //                    <a onclick=Review('${data.id}') class="btn btn-success text-white" style="cursor:pointer">
-            //                        <i class="fas fa-edit"></i> Review
-            //                    </a>                               
-            //                </div>                           
-            //               `;
-            //    }, "width": "15%"
-            //},
             {
                 
                 "data": {
@@ -47,7 +35,7 @@ function loadDataTable() {
                 },
                 "render": function (data) {
                     var ticketStatus =data.ticketStatus;
-                    if (ticketStatus == 9) {
+                    if (ticketStatus == "9") {
                         return `
                             <div class="text-center">
                                 <a onclick=Resolve('${data.id}') class="btn btn-danger text-white" style="cursor:pointer; width:100px;">

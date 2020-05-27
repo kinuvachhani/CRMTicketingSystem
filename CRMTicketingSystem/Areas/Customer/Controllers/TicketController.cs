@@ -72,11 +72,14 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             {
                 _unitOfWork.Ticket.Add(ticketVM.Ticket);
                 ticketVM.Ticket.CreatedDate = DateTime.Now;
-                ticketVM.Ticket.TicketStatus = 1;
+                ticketVM.Ticket.TicketStatus = "1";
+                ticketVM.Ticket.Status = "Pending";
                 _unitOfWork.Save();
 
                 EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketGenerate)).FirstOrDefault();
                 var appuser = _db.Tickets.FirstOrDefault(u => u.Email == ticketVM.Ticket.Email);
+                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(i => i.Email == appuser.Email);
+                emailTemplate.Content = emailTemplate.Content.Replace("###Name###", user.Name);
                 _emailSender.SendEmailAsync(ticketVM.Ticket.Email, emailTemplate.Subject, emailTemplate.Content);
 
                 return RedirectToAction(nameof(Index));
@@ -115,10 +118,6 @@ namespace CRMTicketingSystem.Areas.Customer.Controllers
             {
                 var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(i => i.Id == claim.Value);
                 ticketList = _unitOfWork.Ticket.GetAll(u => u.Email == user.Email, includeProperties: "Product");
-                for (var i = 0; i < ticketList.Count(); i++)
-                {
-                   
-                }
             }
             return Json(new { data = ticketList });
         }

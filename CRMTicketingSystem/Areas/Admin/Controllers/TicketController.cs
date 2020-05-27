@@ -42,7 +42,7 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             Ticket ticket = new Ticket();
             //this is for edit
             ticket = _unitOfWork.Ticket.GetFirstOrDefault(i=>i.Id==id);
-            if (ticket != null && ticket.TicketStatus == 9)
+            if (ticket != null && ticket.TicketStatus == "9")
             {
                 return RedirectToAction("Reviewed", "Ticket");
             }
@@ -56,11 +56,12 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
         {
             var temp = _unitOfWork.Ticket.GetFirstOrDefault(i => i.Id == ticket.Id);
             temp.Review = ticket.Review;
-
+            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(i => i.Email == temp.Email);
             _unitOfWork.Ticket.Update(temp);
             _unitOfWork.Save();
 
             EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketReview)).FirstOrDefault();
+            emailTemplate.Content = emailTemplate.Content.Replace("###Name###", user.Name);
             emailTemplate.Content = emailTemplate.Content.Replace("###Description###", temp.Description);
             emailTemplate.Content = emailTemplate.Content.Replace("###Review###", temp.Review);
             _emailSender.SendEmailAsync(temp.Email, emailTemplate.Subject, emailTemplate.Content);
@@ -74,15 +75,19 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
             var objFromDb = _db.Tickets.FirstOrDefault(s => s.Id == id);
             if (objFromDb != null)
             {
-                if(objFromDb.TicketStatus==9)
+                if(objFromDb.TicketStatus=="9")
                 {
                     return Json(new { success = false, message = "Ticket Already Resolved." });
                 }
-                objFromDb.TicketStatus = 9;
+                objFromDb.TicketStatus = "9";
+                objFromDb.Status = "Resolved";
                 _unitOfWork.Save();
 
                 EmailTemplate emailTemplate = _db.EmailTemplates.Where(e => e.Id == Convert.ToInt32(EnEmailTemplate.TicketResolve)).FirstOrDefault();
                 var appuser = _db.Tickets.FirstOrDefault(u => u.Email == objFromDb.Email);
+                var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(i => i.Email == appuser.Email);
+                emailTemplate.Content = emailTemplate.Content.Replace("###Name###", user.Name);
+                emailTemplate.Content = emailTemplate.Content.Replace("###Description###", appuser.Description);
                 _emailSender.SendEmailAsync(objFromDb.Email, emailTemplate.Subject, emailTemplate.Content);
 
                 return Json(new { success = true, message = "Resolve Successful." });

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRMTicketingSystem.DataAccess.Data;
 using CRMTicketingSystem.DataAccess.Repository.IRepository;
 using CRMTicketingSystem.Models;
 using CRMTicketingSystem.Utility;
@@ -15,10 +16,12 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
     public class CompanyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ApplicationDbContext _db;
 
-        public CompanyController(IUnitOfWork unitOfWork)
+        public CompanyController(IUnitOfWork unitOfWork, ApplicationDbContext db)
         {
             _unitOfWork = unitOfWork;
+            _db = db;
         }
 
         public IActionResult Index()
@@ -53,7 +56,12 @@ namespace CRMTicketingSystem.Areas.Admin.Controllers
                 if (company.Id == 0)
                 {
                     _unitOfWork.Company.Add(company);
-
+                    bool phoneduplicate = _db.Companies.Any(item => item.PhoneNumber == company.PhoneNumber);
+                    if(phoneduplicate == true)
+                    {
+                        ViewBag.ErrorMessage = "Phone Number already Exist.";
+                        return View(company);
+                    }
                 }
                 else
                 {

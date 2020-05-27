@@ -24,8 +24,8 @@ namespace CRMTicketingSystem.DataAccess.Repository
             {
                 objFromDb.Review = ticket.Review;
                 objFromDb.ReviewDate = DateTime.Now;
-                objFromDb.TicketStatus = 4;
-
+                objFromDb.TicketStatus = "4";
+                objFromDb.Status = "Reviewed";
             }
         }
     }
